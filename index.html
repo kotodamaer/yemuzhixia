@@ -137,9 +137,160 @@
       .header h2 { font-size:1.2rem; }
       .header .badge { font-size:0.65rem; padding:4px 10px; }
     }
+/* ===== NEW 标记 ===== */
+.entry-item {
+  position: relative;   /* 让 NEW 能绝对定位到卡片右上角 */
+}
+
+.entry-new-badge {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  background: #ff4d6d;
+  color: #fff;
+  font-size: 0.65rem;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: 20px;
+  letter-spacing: 0.5px;
+  box-shadow: 0 2px 8px rgba(255,77,109,0.5);
+  pointer-events: none;
+  z-index: 2;
+}
+
+.dir-new-badge {
+  background: #ff4d6d;
+  color: #fff;
+  font-size: 0.6rem;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: 20px;
+  margin-left: 8px;
+  flex-shrink: 0;
+}
+
+/* ===== 已读 ===== */
+.dir-item.read {
+  opacity: 0.45;
+}
+.dir-item.read .dir-read-mark {
+  display: inline;
+  color: #6fcf97;
+  margin-right: 6px;
+  font-weight: 700;
+}
+.dir-read-mark {
+  display: none;
+}
+
+/* ===== 深浅色切换按钮 ===== */
+.theme-toggle {
+  position: fixed;
+  top: 18px;
+  right: 18px;
+  z-index: 999;
+  background: #282838;
+  border: 1px solid #3b3b4e;
+  color: #d6d0ec;
+  font-size: 1.1rem;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+}
+.theme-toggle:hover {
+  background: #3a3a52;
+  transform: scale(1.08);
+}
+
+/* ===== 浅色模式（米白） ===== */
+body.light-mode {
+  background: #f5f0e8;
+  color: #2c2c38;
+}
+body.light-mode .card {
+  background: #fdfaf4;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.08), 0 0 0 1px #e8e0d0 inset;
+}
+body.light-mode .notice {
+  background: #f0ebe0;
+  border-left-color: #b7a0ff;
+  color: #5a5a6a;
+}
+body.light-mode .notice strong { color: #4a3f7a; }
+body.light-mode .supplement { color: #8a8a98; border-top-color: #e0d8c8; }
+body.light-mode .header h2 {
+  background: linear-gradient(135deg, #7a6bc0, #9a7fd0);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+body.light-mode .header .badge {
+  background: #ece6da;
+  color: #6a6a7a;
+  border-color: #d8d0c0;
+}
+body.light-mode .entry-item {
+  background: #f8f4ec;
+  border-color: #e0d8c8;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+}
+body.light-mode .entry-item:hover {
+  background: #f0ece0;
+  border-color: #c0b0e0;
+}
+body.light-mode .entry-item.expanded {
+  border-color: #b0a0d0;
+}
+body.light-mode .entry-title { color: #2c2c38; }
+body.light-mode .entry-sub { color: #8a8a98; }
+body.light-mode .entry-arrow { color: #a090c0; }
+body.light-mode .directory-panel {
+  background: #fdfaf4;
+  border-color: #e0d8c8;
+  box-shadow: 0 8px 0 #ece6da, 0 12px 28px rgba(0,0,0,0.1);
+}
+body.light-mode .directory-header {
+  border-bottom-color: #e8e0d0;
+}
+body.light-mode .directory-header span { color: #6a6a7a; }
+body.light-mode .close-dir { color: #a090c0; }
+body.light-mode .dir-item {
+  background: #f2ece0;
+  border-color: #e0d8c8;
+  color: #4a4a5a;
+}
+body.light-mode .dir-item:hover {
+  background: #ece4d4;
+  border-color: #b0a0d0;
+  color: #2c2c38;
+}
+body.light-mode .dir-item .dir-index {
+  background: #e8e0d0;
+  border-color: #d8d0c0;
+  color: #8a7a9a;
+}
+body.light-mode .footnote {
+  color: #b0a898;
+  border-top-color: #e8e0d0;
+}
+body.light-mode .theme-toggle {
+  background: #ece6da;
+  border-color: #d8d0c0;
+  color: #5a5a6a;
+}
+body.light-mode .theme-toggle:hover {
+  background: #e0d8c8;
+}
   </style>
 </head>
 <body>
+<button class="theme-toggle" id="themeToggle">🌙</button>
 <div class="card">
   <div class="notice">
     <strong>📋 预览须知</strong>
@@ -164,19 +315,22 @@
   (function() {
     'use strict';
 
+    // ============================================================
+    //  文章数据
+    // ============================================================
     var articlesData = {
-  redglove: {
-  name: '红手套',
-  subtitle: '"成为砝码，成为火炬，成为循环不息的雨"',
-  list: [
-    { title: '第一章 · 归巢by水母', href: '红手套1.html' },
-    { title: '第二章 · 初拥by雾Euro', href: '红手套2.html' },
-    { title: '第三章 · 红手套的惩罚by水母', href: '红手套3.html' },
-    { title: '第四章 · 礼物by水母', href: '红手套4.html' },
-    { title: '第五章 · 木马by水母', href: '红手套5.html' },
-    { title: '第六章 · 请为西西莉亚开枝散叶吧！8by水母', href: '红手套6.html' }
-  ]
-},
+      redglove: {
+        name: '红手套',
+        subtitle: '"成为砝码，成为火炬，成为循环不息的雨"',
+        list: [
+          { title: '第一章 · 归巢by水母', href: '红手套1.html' },
+          { title: '第二章 · 初拥by雾Euro', href: '红手套2.html' },
+          { title: '第三章 · 红手套的惩罚by水母', href: '红手套3.html' },
+          { title: '第四章 · 礼物by水母', href: '红手套4.html' },
+          { title: '第五章 · 木马by水母', href: '红手套5.html' },
+          { title: '第六章 · 请为西西莉亚开枝散叶吧！8by水母', href: '红手套6.html' }
+        ]
+      },
       wolf: {
         name: '野狼',
         subtitle: '"我不想要自由，我只想要她"',
@@ -192,19 +346,19 @@
           { title: '第二章 · 舞会by水母', href: '幽灵2.html' }
         ]
       },
-  puppeteer: {
-  name: '提线人',
-  subtitle: '"让坐轮椅的上战场？你脑子有病吧"',
-  list: [
-    { title: '第一章 · 请为西西莉亚开枝散叶吧！by水母', href: '提线人1.html' },
-    { title: '第二章 · 你x提线人by常安', href: '提线人2.html' },
-    { title: '第三章 · 你x提线人by 老中医', href: '提线人3.html' },
-    { title: '第四章 · 你x提线人by凤梨酥', href: '提线人4.html' },
-    { title: '第五章 · boss，我爬不动了by水母', href: '提线人5.html' },
-    { title: '第六章 · 你x提线人·走神儿by老中医', href: '提线人6.html' },
-    { title: '第七章 · 水煎好文明by顾及', href: '提线人7.html' }
-  ]
-},
+      puppeteer: {
+        name: '提线人',
+        subtitle: '"让坐轮椅的上战场？你脑子有病吧"',
+        list: [
+          { title: '第一章 · 请为西西莉亚开枝散叶吧！by水母', href: '提线人1.html' },
+          { title: '第二章 · 你x提线人by常安', href: '提线人2.html' },
+          { title: '第三章 · 你x提线人by 老中医', href: '提线人3.html' },
+          { title: '第四章 · 你x提线人by凤梨酥', href: '提线人4.html' },
+          { title: '第五章 · boss，我爬不动了by水母', href: '提线人5.html' },
+          { title: '第六章 · 你x提线人·走神儿by老中医', href: '提线人6.html' },
+          { title: '第七章 · 水晶好文明by提线人', href: '提线人7.html' }
+        ]
+      },
       tyrant: {
         name: '暴君',
         subtitle: '"这里是泰拉，我是泰拉的暴君"',
@@ -220,13 +374,13 @@
         ]
       },
       chef: {
-  name: '主厨',
-  subtitle: '"我是桑托罗餐厅的主厨"',
-  list: [
-    { title: '第一章 · 主厨（春梦）by宋尧霜', href: '主厨1.html' },
-    { title: '第二章 · 请为西西利亚开枝散叶吧6by水母', href: '主厨2.html' }
-  ]
-},
+        name: '主厨',
+        subtitle: '"我是桑托罗餐厅的主厨"',
+        list: [
+          { title: '第一章 · 主厨（春梦）by宋尧霜', href: '主厨1.html' },
+          { title: '第二章 · 请为西西利亚开枝散叶吧6by水母', href: '主厨2.html' }
+        ]
+      },
       fool: {
         name: '愚者',
         subtitle: '"这世上没有比我对命运更忠诚的人了"',
@@ -234,24 +388,24 @@
           { title: '第一章 · 论杯子的养成与护理 by水母', href: '愚者1.html' }
         ]
       },
-    general: {
-  name: '将军',
-  subtitle: '"我会帮你重建西西利亚，帮你扫清一切阻碍"',
-  list: [
-    { title: '第一章 · 将军（春梦）by宋尧霜', href: '将军1.html' },
-    { title: '第二章 · 你x将军by水母', href: '将军2.html' },
-    { title: '第三章 · 将军·请为西西莉亚开枝散叶吧！7by水母', href: '将军3.html' }
-  ]
-},
-     windward: {
-  name: '东南西北',
-  subtitle: '"这一切只是逢场作戏，佳期一梦吗？"',
-  list: [
-    { title: '第一章 · 东南西北gb by困困困困', href: '东南西北1.html' },
-    { title: '第二章 · 七夕福利by温尽乾', href: '东南西北2.html' },
-    { title: '第三章 · 你x东南西北·青梅酒by水母', href: '东南西北3.html' }
-  ]
-},
+      general: {
+        name: '将军',
+        subtitle: '"我会帮你重建西西利亚，帮你扫清一切阻碍"',
+        list: [
+          { title: '第一章 · 将军（春梦）by宋尧霜', href: '将军1.html' },
+          { title: '第二章 · 你x将军by水母', href: '将军2.html' },
+          { title: '第三章 · 将军·请为西西莉亚开枝散叶吧！7by水母', href: '将军3.html' }
+        ]
+      },
+      windward: {
+        name: '东南西北',
+        subtitle: '"这一切只是逢场作戏，佳期一梦吗？"',
+        list: [
+          { title: '第一章 · 东南西北gb by困困困困', href: '东南西北1.html' },
+          { title: '第二章 · 七夕福利by水母', href: '东南西北2.html' },
+          { title: '第三章 · 你x东南西北·青梅酒by水母', href: '东南西北3.html' }
+        ]
+      },
       endy: {
         name: '九命猫',
         subtitle: '"你想要的我都可以给你！"',
@@ -259,18 +413,18 @@
           { title: '第一章 · 九命猫（春梦）by宋尧霜', href: '九命猫1.html' }
         ]
       },
-  interviewer: {
-  name: '面试官',
-  subtitle: '"恭喜你，你被录取了"',
-  list: [
-    { title: '第一章 · 面试官（春梦）by宋尧霜', href: '面试官1.html' },
-    { title: '第二章 · 面试官（纯爱）by水母', href: '面试官2.html' },
-    { title: '第三章 · 画笔by水母', href: '面试官3.html' },
-    { title: '第四章 · NG也会吃醋吗？by水母', href: '面试官4.html' },
-    { title: '第五章 · 涟漪by水母', href: '面试官5.html' },
-    { title: '第六章 · 未命名by水母', href: '面试官6.html' }
-  ]
-},
+      interviewer: {
+        name: '面试官',
+        subtitle: '"恭喜你，你被录取了"',
+        list: [
+          { title: '第一章 · 面试官（春梦）by宋尧霜', href: '面试官1.html' },
+          { title: '第二章 · 面试官（纯爱）by水母', href: '面试官2.html' },
+          { title: '第三章 · 画笔by水母', href: '面试官3.html' },
+          { title: '第四章 · NG也会吃醋吗？by水母', href: '面试官4.html' },
+          { title: '第五章 · 涟漪by水母', href: '面试官5.html' },
+          { title: '第六章 · 未命名by水母', href: '面试官6.html' }
+        ]
+      },
       rosasr: {
         name: '罗萨斯',
         subtitle: '"我恨你，但我更恨你不爱我"',
@@ -288,41 +442,118 @@
           { title: '第一章 · 回雁by水母', href: '刀锋1.html' }
         ]
       },
-       heishao: {
-  name: '黑哨',
-  subtitle: '"随便写的句子，你到时候自己改"',
+      heishao: {
+        name: '黑哨',
+        subtitle: '"除了你，我现在不想听见任何动静"',
+        list: [
+          { title: '第一章 · 蓝莓慕斯by水母', href: '黑哨1.html' },
+          { title: '第二章 · 感官过载by水母', href: '黑哨2.html' }
+        ]
+      },
+shengzi: {
+  name: '圣子',
+  subtitle: '"我需要你成为我的半身"',
   list: [
-    { title: '第一章 · 蓝莓慕斯by水母', href: '黑哨1.html' },
-    { title: '第二章 · 感官过载by水母', href: '黑哨2.html' }
+    { title: '第一章 · 圣子是好男孩吗？by水母', href: '圣子1.html' }
   ]
 },
-    NP: {
-  name: 'NP',
-  subtitle: '"np小剧场，注意甄别"',
-  list: [
-    { title: '第一章 · [你x暴君+刀锋]boss我们这样真的好吗by水母', href: 'np1.html' },
-    { title: '第二章 · 一次单纯的旅行（1vs5）by雾Euro', href: 'np2.html' },
-    { title: '第三章 · [你x幽灵+面试官]zc什么的还是放一边吧by水母', href: 'np3.html' },
-    { title: '第四章 · [你x面试官+愚者]肝帝的一百种使用方式by水母', href: 'np4.html' }
-  ]
-},  
-kaiye: {
-    name: '请为西西莉亚开枝散叶吧！',
-    subtitle: "开枝散叶系列合集",
-    list: [
-        { title: '第一章·请为西西莉亚开枝散叶吧！ 1（野狼）', href: '野狼1.html' },
-        { title: '第二章·请为西西莉亚开枝散叶吧！ 2（提线人）', href: '提线人1.html' },
-        { title: '第三章·请为西西莉亚开枝散叶吧！ 3（暴君）', href: '暴君1.html' },
-        { title: '第四章·请为西西莉亚开枝散叶吧！ 4（幽灵）', href: '幽灵1.html' },
-        { title: '第五章·请为西西莉亚开枝散叶吧！ 5（某某人）', href: '某某人1.html' },
-        { title: '第六章·请为西西莉亚开枝散叶吧！ 6（主厨）', href: '主厨2.html' },
-        { title: '第七章·请为西西莉亚开枝散叶吧！ 7（将军）', href: '将军3.html' },
-        { title: '第八章·请为西西莉亚开枝散叶吧！ 8（红手套）', href: '红手套6.html' },
-        { title: '第九章·请为西西莉亚开枝散叶吧！ 9（完结）', href: '开枝散叶1.html' }
-    ]
+      NP: {
+        name: 'NP',
+        subtitle: '"np小剧场，注意甄别"',
+        list: [
+          { title: '第一章 · [你x暴君+刀锋]boss我们这样真的好吗by水母', href: 'np1.html' },
+          { title: '第二章 · 一次单纯的旅行（1vs5）by雾Euro', href: 'np2.html' },
+          { title: '第三章 · [你x幽灵+面试官]zc什么的还是放一边吧by水母', href: 'np3.html' },
+          { title: '第四章 · [你x面试官+愚者]肝帝的一百种使用方式by水母', href: 'np4.html' }
+        ]
+      },
+      kaiye: {
+        name: '请为西西莉亚开枝散叶吧',
+        subtitle: '"开枝散叶系列合集"',
+        list: [
+          { title: '第一章 · 请为西西莉亚开枝散叶吧！1', href: '野狼1.html' },
+          { title: '第二章 · 请为西西莉亚开枝散叶吧！2', href: '提线人1.html' },
+          { title: '第三章 · 请为西西莉亚开枝散叶吧！3', href: '暴君1.html' },
+          { title: '第四章 · 请为西西莉亚开枝散叶吧！4', href: '幽灵1.html' },
+          { title: '第五章 · 请为西西莉亚开枝散叶吧！5', href: '某某人1.html' },
+          { title: '第六章 · 请为西西莉亚开枝散叶吧！6', href: '主厨2.html' },
+          { title: '第七章 · 请为西西莉亚开枝散叶吧！7', href: '将军3.html' },
+          { title: '第八章 · 请为西西莉亚开枝散叶吧！8', href: '红手套6.html' },
+          { title: '第九章 · 请为西西莉亚开枝散叶吧！9', href: '开枝散叶1.html' }
+        ]
+      }
+    };
+
+    // ============================================================
+    //  localStorage 键名
+    // ============================================================
+    var LS_NEW = 'jellyfish_new_';
+    var LS_READ = 'jellyfish_read_';
+    var LS_THEME = 'jellyfish_theme';
+
+    // ============================================================
+    //  工具函数
+    // ============================================================
+    function getNewSet(roleKey) {
+      try {
+        return new Set(JSON.parse(localStorage.getItem(LS_NEW + roleKey) || '[]'));
+      } catch(e) { return new Set(); }
     }
-   };
-var grid = document.getElementById('entryGrid');
+    function saveNewSet(roleKey, set) {
+      localStorage.setItem(LS_NEW + roleKey, JSON.stringify(Array.from(set)));
+    }
+    function getReadSet() {
+      try {
+        return new Set(JSON.parse(localStorage.getItem(LS_READ) || '[]'));
+      } catch(e) { return new Set(); }
+    }
+    function saveReadSet(set) {
+      localStorage.setItem(LS_READ, JSON.stringify(Array.from(set)));
+    }
+    function articleKey(roleKey, href) {
+      return roleKey + '::' + href;
+    }
+
+    // ============================================================
+    //  自动检测 NEW：对比上次存的文章列表
+    // ============================================================
+    var LS_SNAPSHOT = 'jellyfish_snapshot';
+
+    function detectNewArticles() {
+      var oldSnapshot = {};
+      try {
+        oldSnapshot = JSON.parse(localStorage.getItem(LS_SNAPSHOT) || '{}');
+      } catch(e) { oldSnapshot = {}; }
+
+      var newSnapshot = {};
+
+      Object.keys(articlesData).forEach(function(roleKey) {
+        var role = articlesData[roleKey];
+        var currentHrefs = role.list.map(function(a) { return a.href; });
+        newSnapshot[roleKey] = currentHrefs;
+
+        // 第一次访问，不标记 NEW
+        if (!oldSnapshot[roleKey]) return;
+
+        var oldHrefs = oldSnapshot[roleKey];
+        var newSet = getNewSet(roleKey);
+        currentHrefs.forEach(function(href) {
+          if (oldHrefs.indexOf(href) === -1) {
+            newSet.add(href);
+          }
+        });
+        saveNewSet(roleKey, newSet);
+      });
+
+      localStorage.setItem(LS_SNAPSHOT, JSON.stringify(newSnapshot));
+    }
+
+    detectNewArticles();
+
+    // ============================================================
+    //  渲染卡片
+    // ============================================================
+    var grid = document.getElementById('entryGrid');
     if (!grid) return;
     grid.innerHTML = '';
 
@@ -330,13 +561,20 @@ var grid = document.getElementById('entryGrid');
       var role = articlesData[roleKey];
       if (!role) return;
 
+      var newSet = getNewSet(roleKey);
+      var hasNew = role.list.some(function(a) { return newSet.has(a.href); });
+
       var wrapper = document.createElement('div');
       wrapper.className = 'entry-wrapper';
 
       var item = document.createElement('div');
       item.className = 'entry-item';
       item.dataset.target = roleKey;
+
+      var badgeHTML = hasNew ? '<div class="entry-new-badge">NEW</div>' : '';
+
       item.innerHTML =
+        badgeHTML +
         '<div class="entry-left">' +
           '<div class="entry-title">' + role.name + '</div>' +
           '<div class="entry-sub">' + (role.subtitle || '') + '</div>' +
@@ -358,6 +596,9 @@ var grid = document.getElementById('entryGrid');
       grid.appendChild(wrapper);
     });
 
+    // ============================================================
+    //  收集面板
+    // ============================================================
     var dirPanels = {};
     var dirLists = {};
     Object.keys(articlesData).forEach(function(roleKey) {
@@ -375,43 +616,114 @@ var grid = document.getElementById('entryGrid');
       });
     }
 
+    // ============================================================
+    //  渲染目录列表（含 NEW / 已读）
+    // ============================================================
     function renderDirList(roleKey) {
       var role = articlesData[roleKey];
       if (!role) return;
       var container = dirLists[roleKey];
       if (!container) return;
+
+      var newSet = getNewSet(roleKey);
+      var readSet = getReadSet();
+
       container.innerHTML = '';
       role.list.forEach(function(article, index) {
+        var isNew = newSet.has(article.href);
+        var isRead = readSet.has(articleKey(roleKey, article.href));
+
         var div = document.createElement('div');
-        div.className = 'dir-item';
+        div.className = 'dir-item' + (isRead ? ' read' : '');
+
+        var readMark = isRead ? '<span class="dir-read-mark">✓</span>' : '';
+        var newBadge = isNew ? '<span class="dir-new-badge">NEW</span>' : '';
+
         div.innerHTML =
-          '<span>' + article.title + '</span>' +
+          '<span>' + readMark + article.title + newBadge + '</span>' +
           '<span class="dir-index">#' + (index + 1) + '</span>';
+
         div.addEventListener('click', function(e) {
           e.stopPropagation();
-          if (article.href) window.location.href = article.href;
-          else console.warn('无链接:', article.title);
+
+          // 标记为已读
+          var rs = getReadSet();
+          rs.add(articleKey(roleKey, article.href));
+          saveReadSet(rs);
+
+          // 清除该篇的 NEW
+          var ns = getNewSet(roleKey);
+          ns.delete(article.href);
+          saveNewSet(roleKey, ns);
+
+          // 更新卡片上的 NEW 标记
+          updateCardNewBadge(roleKey);
+
+          // 重新渲染当前列表（更新已读状态）
+          renderDirList(roleKey);
+
+          // 跳转
+          if (article.href) {
+            window.location.href = article.href;
+          }
         });
+
         container.appendChild(div);
       });
     }
 
+    // ============================================================
+    //  更新卡片上的 NEW 标记
+    // ============================================================
+    function updateCardNewBadge(roleKey) {
+      var role = articlesData[roleKey];
+      if (!role) return;
+      var newSet = getNewSet(roleKey);
+      var hasNew = role.list.some(function(a) { return newSet.has(a.href); });
+
+      var item = document.querySelector('.entry-item[data-target="' + roleKey + '"]');
+      if (!item) return;
+
+      var existingBadge = item.querySelector('.entry-new-badge');
+      if (hasNew && !existingBadge) {
+        var badge = document.createElement('div');
+        badge.className = 'entry-new-badge';
+        badge.textContent = 'NEW';
+        item.insertBefore(badge, item.firstChild);
+      } else if (!hasNew && existingBadge) {
+        existingBadge.remove();
+      }
+    }
+
+    // ============================================================
+    //  展开 / 收起目录 + 平滑滚动
+    // ============================================================
     function toggleDirectory(roleKey) {
       var panel = dirPanels[roleKey];
       if (!panel) return;
+
       if (panel.classList.contains('active')) {
         panel.classList.remove('active');
         var entry = document.querySelector('.entry-item[data-target="' + roleKey + '"]');
         if (entry) entry.classList.remove('expanded');
         return;
       }
+
       hideAllDirs();
       panel.classList.add('active');
       var entry = document.querySelector('.entry-item[data-target="' + roleKey + '"]');
       if (entry) entry.classList.add('expanded');
       renderDirList(roleKey);
+
+      // 平滑滚动到面板可见
+      setTimeout(function() {
+        panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      }, 100);
     }
 
+    // ============================================================
+    //  事件绑定
+    // ============================================================
     document.querySelectorAll('.entry-item').forEach(function(item) {
       item.addEventListener('click', function(e) {
         var target = this.dataset.target;
@@ -433,6 +745,33 @@ var grid = document.getElementById('entryGrid');
 
     document.addEventListener('click', function(e) {
       if (!e.target.closest('.card')) hideAllDirs();
+    });
+
+    // ============================================================
+    //  深浅色切换
+    // ============================================================
+    var themeToggle = document.getElementById('themeToggle');
+    var savedTheme = localStorage.getItem(LS_THEME);
+
+    function applyTheme(theme) {
+      if (theme === 'light') {
+        document.body.classList.add('light-mode');
+        themeToggle.textContent = '☀️';
+      } else {
+        document.body.classList.remove('light-mode');
+        themeToggle.textContent = '🌙';
+      }
+    }
+
+    if (savedTheme) {
+      applyTheme(savedTheme);
+    }
+
+    themeToggle.addEventListener('click', function() {
+      var isLight = document.body.classList.contains('light-mode');
+      var newTheme = isLight ? 'dark' : 'light';
+      applyTheme(newTheme);
+      localStorage.setItem(LS_THEME, newTheme);
     });
 
     console.log('🌊 已加载，共 ' + Object.keys(articlesData).length + ' 个角色');
