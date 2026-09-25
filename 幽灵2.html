@@ -1,177 +1,280 @@
-  <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>1. 将军（春梦）by 宋尧霜</title>
-    <style>
-        /* ---------- 主题变量 ---------- */
-        :root {
-            --bg-body: #fefefe;
-            --bg-note: #f9f9f9;
-            --border-light: #eee;
-            --border-medium: #ddd;
-            --text-primary: #333;
-            --text-secondary: #666;
-            --text-muted: #888;
-            --text-title: #222;
-            --text-section: #444;
-            --accent-line: #aaa;
-            --toggle-bg: #ffffff;
-            --toggle-border: #ccc;
-            --toggle-text: #333;
-        }
-        body.dark {
-            --bg-body: #1a1e24;
-            --bg-note: #252a31;
-            --border-light: #2e353e;
-            --border-medium: #3a424d;
-            --text-primary: #e0e0e0;
-            --text-secondary: #b0b8c0;
-            --text-muted: #8a939e;
-            --text-title: #f0f0f0;
-            --text-section: #d0d8e0;
-            --accent-line: #5a6570;
-            --toggle-bg: #2a313a;
-            --toggle-border: #4a5560;
-            --toggle-text: #e8e8e8;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>幽灵</title>
+  <style>
+    /* ---------- 主题变量 ---------- */
+    :root {
+      --bg-body: #fefefe;
+      --bg-note: #f9f9f9;
+      --border-light: #eee;
+      --border-medium: #ddd;
+      --text-primary: #333;
+      --text-secondary: #666;
+      --text-muted: #888;
+      --text-title: #222;
+      --text-section: #444;
+      --accent-line: #aaa;
+      --toggle-bg: #ffffff;
+      --toggle-border: #ccc;
+      --toggle-text: #333;
+    }
+    body.dark {
+      --bg-body: #1a1e24;
+      --bg-note: #252a31;
+      --border-light: #2e353e;
+      --border-medium: #3a424d;
+      --text-primary: #e0e0e0;
+      --text-secondary: #b0b8c0;
+      --text-muted: #8a939e;
+      --text-title: #f0f0f0;
+      --text-section: #d0d8e0;
+      --accent-line: #5a6570;
+      --toggle-bg: #2a313a;
+      --toggle-border: #4a5560;
+      --toggle-text: #e8e8e8;
+    }
 
-        /* ---------- 基础样式 ---------- */
-        body {
-            font-family: 'Georgia', 'Songti SC', serif;
-            line-height: 1.8;
-            color: var(--text-primary);
-            max-width: 800px;
-            margin: 40px auto;
-            padding: 20px;
-            background-color: var(--bg-body);
-            border-left: 1px solid var(--border-light);
-            border-right: 1px solid var(--border-light);
-            transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
-        }
+    /* ---------- 基础样式 ---------- */
+    body {
+      font-family: 'Georgia', 'Songti SC', serif;
+      line-height: 1.8;
+      color: var(--text-primary);
+      max-width: 800px;
+      margin: 40px auto;
+      padding: 20px;
+      background-color: var(--bg-body);
+      border-left: 1px solid var(--border-light);
+      border-right: 1px solid var(--border-light);
+      transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+    }
 
-        p {
-            margin-bottom: 1.2em;
-            text-indent: 2em;
-        }
-        .no-indent { text-indent: 0; }
+    p {
+      margin-bottom: 1.2em;
+      text-indent: 2em;
+    }
+    .no-indent { text-indent: 0; }
 
-        .scene-break {
-            text-align: center;
-            margin: 2em 0;
-            color: var(--accent-line);
-            font-size: 0.9em;
-        }
+    .scene-break {
+      text-align: center;
+      margin: 2em 0;
+      color: var(--accent-line);
+      font-size: 0.9em;
+    }
 
-        .title {
-            text-align: center;
-            font-size: 1.8em;
-            margin-bottom: 1em;
-            color: var(--text-title);
-            border-bottom: 1px solid var(--border-medium);
-            padding-bottom: 0.5em;
-        }
+    .title {
+      text-align: center;
+      font-size: 1.8em;
+      margin-bottom: 1em;
+      color: var(--text-title);
+      border-bottom: 1px solid var(--border-medium);
+      padding-bottom: 0.5em;
+    }
 
-        .meta {
-            text-align: center;
-            font-size: 0.9em;
-            color: var(--text-secondary);
-            margin-bottom: 2em;
-            font-style: italic;
-            line-height: 1.6;
-        }
+    .meta {
+      text-align: center;
+      font-size: 0.9em;
+      color: var(--text-secondary);
+      margin-bottom: 2em;
+      font-style: italic;
+      line-height: 1.6;
+    }
 
-        .end {
-            text-align: center;
-            margin-top: 3em;
-            padding-top: 1em;
-            border-top: 1px solid var(--border-medium);
-            font-weight: bold;
-            color: var(--text-secondary);
-        }
+    .end {
+      text-align: center;
+      margin-top: 3em;
+      padding-top: 1em;
+      border-top: 1px solid var(--border-medium);
+      font-weight: bold;
+      color: var(--text-secondary);
+    }
 
-        .section-title {
-            font-weight: bold;
-            color: var(--text-section);
-            margin: 1.5em 0 0.5em;
-            text-align: center;
-            font-size: 1.2em;
-        }
+    .section-title {
+      font-weight: bold;
+      color: var(--text-section);
+      margin: 1.5em 0 0.5em;
+      text-align: center;
+      font-size: 1.2em;
+    }
 
-        .dialogue {
-            margin-left: 2em;
-            font-style: italic;
-        }
+    .dialogue {
+      margin-left: 2em;
+      font-style: italic;
+    }
 
-        .action {
-            color: var(--text-secondary);
-            font-style: italic;
-        }
+    .action {
+      color: var(--text-secondary);
+      font-style: italic;
+    }
 
-        .author-note {
-            font-size: 0.85em;
-            color: var(--text-muted);
-            margin-top: 2em;
-            padding: 1em;
-            background-color: var(--bg-note);
-            border-left: 3px solid var(--border-medium);
-            font-family: 'Arial', sans-serif;
-        }
+    .author-note {
+      font-size: 0.85em;
+      color: var(--text-muted);
+      margin-top: 2em;
+      padding: 1em;
+      background-color: var(--bg-note);
+      border-left: 3px solid var(--border-medium);
+      font-family: 'Arial', sans-serif;
+    }
 
-        /* ---------- 主题切换按钮 ---------- */
-        .theme-toggle {
-            position: fixed;
-            top: 24px;
-            right: 24px;
-            background-color: var(--toggle-bg);
-            color: var(--toggle-text);
-            border: 1px solid var(--toggle-border);
-            border-radius: 40px;
-            padding: 10px 18px;
-            font-size: 0.9rem;
-            font-family: Arial, sans-serif;
-            cursor: pointer;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
-            transition: all 0.3s ease;
-            z-index: 9999;
-        }
-        .theme-toggle:hover { transform: scale(1.03); }
-        @media (max-width: 600px) {
-            body { margin: 20px auto; padding: 16px; }
-            .theme-toggle { top: 12px; right: 12px; padding: 8px 14px; font-size: 0.8rem; }
-            .title { font-size: 1.5em; }
-        }
-/* ===== 返回主页板块 ===== */
-.back-btn {
-    display: block;
-    text-align: center;
-    max-width: 400px;
-    margin: 2.5em auto 1em;
-    padding: 1em 1.5em;
-    background-color: var(--bg-note);
-    border: 1px solid var(--border-light);
-    border-radius: 8px;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.04);
-    color: var(--text-secondary);
-    text-decoration: none;
-    font-family: 'Arial', sans-serif;
-    font-size: 0.95em;
-    transition: all 0.3s ease;
-}
-.back-btn:hover {
-    color: var(--text-primary);
-    background-color: var(--border-light);
-    transform: translateY(-1px);
-}
-    </style>
+    /* ---------- 主题切换按钮 ---------- */
+    .theme-toggle {
+      position: fixed;
+      top: 24px;
+      right: 24px;
+      background-color: var(--toggle-bg);
+      color: var(--toggle-text);
+      border: 1px solid var(--toggle-border);
+      border-radius: 40px;
+      padding: 10px 18px;
+      font-size: 0.9rem;
+      font-family: Arial, sans-serif;
+      cursor: pointer;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+      transition: all 0.3s ease;
+      z-index: 9999;
+    }
+    .theme-toggle:hover { transform: scale(1.03); }
+    @media (max-width: 600px) {
+      body { margin: 20px auto; padding: 16px; }
+      .theme-toggle { top: 12px; right: 12px; padding: 8px 14px; font-size: 0.8rem; }
+      .title { font-size: 1.5em; }
+    }
+
+    /* ---------- 返回主页板块 ---------- */
+    .back-btn {
+      display: block;
+      text-align: center;
+      max-width: 400px;
+      margin: 2.5em auto 1em;
+      padding: 1em 1.5em;
+      background-color: var(--bg-note);
+      border: 1px solid var(--border-light);
+      border-radius: 8px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-family: 'Arial', sans-serif;
+      font-size: 0.95em;
+      transition: all 0.3s ease;
+    }
+    .back-btn:hover {
+      color: var(--text-primary);
+      background-color: var(--border-light);
+      transform: translateY(-1px);
+    }
+
+    /* ---------- 悬浮按钮 ---------- */
+    .float-btns {
+      position: fixed;
+      right: 20px;
+      bottom: 30px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      z-index: 999;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s;
+    }
+    .float-btns.show {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    .float-btn {
+      width: 46px;
+      height: 46px;
+      border-radius: 50%;
+      background: #282838;
+      border: 1px solid #3b3b4e;
+      color: #d6d0ec;
+      font-size: 1.2rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+      transition: 0.2s;
+    }
+    .float-btn:hover {
+      background: #3a3a52;
+      transform: scale(1.08);
+      color: #b8a6ff;
+    }
+
+    /* ---------- 上一章 / 下一章 ---------- */
+    .chapter-nav {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      margin-top: 30px;
+      padding-top: 20px;
+      border-top: 1px solid var(--border-medium);
+    }
+    .chapter-btn {
+      flex: 1;
+      text-align: center;
+      padding: 12px 16px;
+      border-radius: 20px;
+      background-color: var(--bg-note);
+      border: 1px solid var(--border-light);
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-size: 0.9rem;
+      transition: 0.2s;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .chapter-btn:hover {
+      background-color: var(--border-light);
+      color: var(--text-primary);
+    }
+    .chapter-btn.disabled {
+      opacity: 0.25;
+      pointer-events: none;
+      cursor: default;
+    }
+    @media (max-width:480px) {
+      .chapter-btn { font-size: 0.8rem; padding: 10px 10px; }
+    }
+
+    /* ==================== 8. 字数 / 阅读时长 ==================== */
+    .reading-stats {
+      text-align: center;
+      font-size: 0.85em;
+      color: var(--text-muted);
+      margin: -1em 0 2em;
+      font-family: 'Arial', sans-serif;
+      letter-spacing: 0.5px;
+    }
+
+    /* ==================== 9. 阅读进度条 ==================== */
+    .progress-bar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 0%;
+      height: 3px;
+      background: linear-gradient(90deg, #8f7fd6, #b8a6ff);
+      z-index: 99999;
+      transition: width 0.1s linear;
+    }
+  </style>
 </head>
 <body>
-    <!-- 主题切换按钮 -->
-    <button class="theme-toggle" id="themeToggle" aria-label="切换深浅色模式">
-        <span id="themeIcon">🌙</span>
-        <span id="themeText">深色模式</span>
-    </button>
+
+  <!-- 阅读进度条 -->
+  <div class="progress-bar" id="progressBar"></div>
+
+  <!-- 主题切换按钮 -->
+  <button class="theme-toggle" id="themeToggle" aria-label="切换深浅色模式">
+    <span id="themeIcon">🌙</span>
+    <span id="themeText">深色模式</span>
+  </button>
 
     <div class="title">舞会 · 幽灵篇</div>
     <div class="meta">
@@ -396,79 +499,151 @@
     <p>但夜还很长。</p>
 
     <div class="end">——END——</div>
-        <!-- 返回主页的链接 -->
-            <a href="index.html " class="back-btn">⬅ 返回主页</a >
-        </div>
-    </div>
-<style>
-/* ===== 返回主页板块 ===== */
-.back-btn {
-    display: block;
-    text-align: center;
-    max-width: 400px;
-    margin: 2.5em auto 1em;
-    padding: 1em 1.5em;
-    background-color: var(--bg-note);
-    border: 1px solid var(--border-light);
-    border-radius: 8px;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.04);
-    color: var(--text-secondary);
-    text-decoration: none;
-    font-family: 'Arial', sans-serif;
-    font-size: 0.95em;
-    transition: all 0.3s ease;
-}
-.back-btn:hover {
-    color: var(--text-primary);
-    background-color: var(--border-light);
-    transform: translateY(-1px);
-}
-</style>
-<script>
-  (function() {
-    var key = 'jellyfish_scroll_' + location.pathname;
-    var saved = localStorage.getItem(key);
-    if (saved) {
-      window.addEventListener('load', function() {
-        window.scrollTo(0, parseInt(saved, 10));
-      });
-    }
-    var timer = null;
-    window.addEventListener('scroll', function() {
-      if (timer) return;
-      timer = setTimeout(function() {
-        localStorage.setItem(key, window.scrollY);
-        timer = null;
-      }, 300);
-    });
-  })();
-</script>
-    <script>
-    (function() {
-        const btn = document.getElementById('themeToggle');
-        const icon = document.getElementById('themeIcon');
-        const text = document.getElementById('themeText');
-        const body = document.body;
-        let isDark = false;
+    <!-- ==================== 上一章 / 下一章 ==================== -->
+  <div class="chapter-nav">
+    <a href="#" class="chapter-btn" id="prevBtn">← 上一章</a>
+    <a href="#" class="chapter-btn" id="nextBtn">下一章 →</a>
+  </div>
 
-        function applyTheme(dark) {
-            body.classList.toggle('dark', dark);
-            icon.textContent = dark ? '☀️' : '🌙';
-            text.textContent = dark ? '浅色模式' : '深色模式';
-            localStorage.setItem('novel-theme', dark ? 'dark' : 'light');
+  <!-- ==================== 返回主页 ==================== -->
+  <a href="index.html" class="back-btn">⬅ 返回主页</a>
+
+  <!-- ==================== 悬浮按钮 ==================== -->
+  <div class="float-btns" id="floatBtns">
+    <button class="float-btn" id="btnTop" title="回到顶部">↑</button>
+    <a href="index.html" class="float-btn" title="返回目录">📖</a>
+  </div>
+
+  <!-- ==================== 脚本 ==================== -->
+  <script src="data.js"></script>
+  <script>
+    (function() {
+      // ===== 记住阅读位置 =====
+      var key = 'jellyfish_scroll_' + location.pathname;
+      var saved = localStorage.getItem(key);
+      if (saved) {
+        window.addEventListener('load', function() {
+          window.scrollTo(0, parseInt(saved, 10));
+        });
+      }
+      var timer = null;
+      window.addEventListener('scroll', function() {
+        if (timer) return;
+        timer = setTimeout(function() {
+          localStorage.setItem(key, window.scrollY);
+          timer = null;
+        }, 300);
+      });
+
+      // ===== 悬浮按钮显示/隐藏 =====
+      var floatBtns = document.getElementById('floatBtns');
+      var btnTop = document.getElementById('btnTop');
+
+      window.addEventListener('scroll', function() {
+        if (window.scrollY > 200) {
+          floatBtns.classList.add('show');
+        } else {
+          floatBtns.classList.remove('show');
+        }
+      });
+
+      btnTop.addEventListener('click', function() {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      });
+
+                  // ===== 上一章 / 下一章（自动识别） =====
+      var currentFile = decodeURIComponent(location.pathname.split('/').pop());
+      var currentRole = null;
+      var currentIndex = -1;
+
+      if (typeof articlesData !== 'undefined') {
+        Object.keys(articlesData).forEach(function(roleKey) {
+          var role = articlesData[roleKey];
+          role.list.forEach(function(article, idx) {
+            if (article.href === currentFile) {
+              currentRole = roleKey;
+              currentIndex = idx;
+            }
+          });
+        });
+      }
+
+      if (currentRole !== null && currentIndex >= 0) {
+        var roleData = articlesData[currentRole];
+        var prevBtn = document.getElementById('prevBtn');
+        var nextBtn = document.getElementById('nextBtn');
+
+        if (currentIndex > 0) {
+          prevBtn.href = roleData.list[currentIndex - 1].href;
+        } else {
+          prevBtn.classList.add('disabled');
+          prevBtn.href = 'javascript:void(0)';
         }
 
-        const saved = localStorage.getItem('novel-theme');
-        if (saved === 'dark') { isDark = true; }
-        else if (saved === 'light') { isDark = false; }
-        else { isDark = window.matchMedia('(prefers-color-scheme: dark)').matches; }
-        applyTheme(isDark);
+        if (currentIndex < roleData.list.length - 1) {
+          nextBtn.href = roleData.list[currentIndex + 1].href;
+        } else {
+          nextBtn.classList.add('disabled');
+          nextBtn.href = 'javascript:void(0)';
+        }
+      }
 
-        btn.addEventListener('click', () => {
-            isDark = !isDark;
-            applyTheme(isDark);
-        });
+      // ===== 8. 字数 / 阅读时长 =====
+      var statsEl = document.getElementById('readingStats');
+      if (statsEl) {
+        var bodyEl = document.querySelector('body');
+        var clone = bodyEl.cloneNode(true);
+        // 去掉脚本、样式、按钮等
+        clone.querySelectorAll('script, style, button, a, .theme-toggle, .float-btns, .chapter-nav, .back-btn, .progress-bar, .reading-stats').forEach(function(el) { el.remove(); });
+        var text = clone.innerText || '';
+        var cleanText = text.replace(/\s+/g, '');
+        var charCount = cleanText.length;
+        var minutes = Math.max(1, Math.round(charCount / 400));
+        statsEl.textContent = '约 ' + charCount + ' 字 · 阅读约 ' + minutes + ' 分钟';
+      }
+
+      // ===== 9. 阅读进度条 =====
+      var progressBar = document.getElementById('progressBar');
+      function updateProgress() {
+        var scrollTop = window.scrollY;
+        var docHeight = document.documentElement.scrollHeight - window.innerHeight;
+        var percent = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+        progressBar.style.width = Math.min(100, Math.max(0, percent)) + '%';
+      }
+      window.addEventListener('scroll', updateProgress);
+      window.addEventListener('resize', updateProgress);
+      updateProgress();
     })();
-    </script>
+  </script>
+
+  <!-- ==================== 主题切换脚本 ==================== -->
+  <script>
+    (function() {
+      const btn = document.getElementById('themeToggle');
+      const icon = document.getElementById('themeIcon');
+      const text = document.getElementById('themeText');
+      const body = document.body;
+      let isDark = false;
+
+      function applyTheme(dark) {
+        body.classList.toggle('dark', dark);
+        icon.textContent = dark ? '☀️' : '🌙';
+        text.textContent = dark ? '浅色模式' : '深色模式';
+        localStorage.setItem('novel-theme', dark ? 'dark' : 'light');
+      }
+
+      const saved = localStorage.getItem('novel-theme');
+      if (saved === 'dark') { isDark = true; }
+      else if (saved === 'light') { isDark = false; }
+      else { isDark = window.matchMedia('(prefers-color-scheme: dark)').matches; }
+      applyTheme(isDark);
+
+      btn.addEventListener('click', () => {
+        isDark = !isDark;
+        applyTheme(isDark);
+      });
+    })();
+  </script>
+
 </body>
 </html>

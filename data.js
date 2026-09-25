@@ -8,14 +8,17 @@ var articlesData = {
           { title: '第三章 · 红手套的惩罚by水母', href: '红手套3.html' },
           { title: '第四章 · 礼物', href: '红手套4.html' },
           { title: '第五章 · 木马 byfantasma', href: '红手套5.html' },
-          { title: '第六章 · 请为西西莉亚开枝散叶吧！8by水母', href: '红手套6.html' }
+          { title: '第六章 · 请为西西莉亚开枝散叶吧！8by水母', href: '红手套6.html' },
+          { title: '第七章 · 引狼入室by宽粉', href: '红手套7.html' }
+
         ]
       },
   wolf: {
     name: '野狼',
     subtitle: '"我不想要自由，我只想要她"',
     list: [
-      { title: '第一章 · 请为西西里亚开枝散叶吧！by水母', href: '野狼1.html' }
+      { title: '第一章 · 请为西西里亚开枝散叶吧！by水母', href: '野狼1.html' },
+      { title: '第二章 · 自己养大的法着放心by水母', href: '野狼2.html' }
     ]
   },
   ghost: {
@@ -36,7 +39,8 @@ var articlesData = {
       { title: '第四章 · 你x提线人by凤梨酥', href: '提线人4.html' },
       { title: '第五章 · boss，我爬不动了byfantasma', href: '提线人5.html' },
       { title: '第六章 · 你x提线人·走绳 中医', href: '提线人6.html' },
-      { title: '第七章 · 水煎好文明', href: '提线人7.html' }
+      { title: '第七章 · 水煎好文明', href: '提线人7.html' },
+     { title: '第七章 · 别乱喝boss递来的牛奶', href: '提线人7.html' }
     ]
   },
   tyrant: {
@@ -50,7 +54,8 @@ var articlesData = {
     name: '某某人',
     subtitle: '"我是你的某某人"',
     list: [
-      { title: '第一章 · 请为西西莉亚开枝散叶吧！by水母', href: '某某人1.html' }
+      { title: '第一章 · 请为西西莉亚开枝散叶吧！by水母', href: '某某人1.html' },
+      { title: '第二章 ·嫂子开门我是我哥by宽粉', href: '某某人2.html' }
     ]
   },
   chef: {
@@ -65,7 +70,8 @@ var articlesData = {
     name: '愚者',
     subtitle: '"这世上没有比我对命运更忠诚的人了"',
     list: [
-      { title: '第一章 · 论杯子的养成与护理 by水母', href: '愚者1.html' }
+      { title: '第一章 · 论杯子的养成与护理 by水母', href: '愚者1.html' },
+      { title: '第二章 · boss这要挨不少电 by水母', href: '愚者2.html' }
     ]
   },
   general: {
@@ -84,6 +90,7 @@ var articlesData = {
       { title: '第一章 · 东南西北gb by困困困困', href: '东南西北1.html' },
       { title: '第二章 · 七夕福利by水母', href: '东南西北2.html' },
       { title: '第三章 · 你x东南西北·青梅酒by水母', href: '东南西北3.html' },
+      { title: '第四章 · 中秋嘉庆by水母', href: '东南西北4html' },
      ]
   },
   endy: {
@@ -102,7 +109,9 @@ var articlesData = {
       { title: '第三章 · 画笔by水母', href: '面试官3.html' },
       { title: '第四章 · NG也会吃醋吗？by水母', href: '面试官4.html' },
       { title: '第五章 · 涟漪by水母', href: '面试官5.html' },
-      { title: '第六章 · 未命名by水母', href: '面试官6.html' }
+      { title: '第六章 · 未命名by水母', href: '面试官6.html' },
+      { title: '第七章 · 想看什么自己剪by宽粉', href: '面试官7.html' }
+
     ]
   },
   rosasr: {
@@ -127,7 +136,8 @@ var articlesData = {
     subtitle: '"除了你，我现在不想听见任何动静"',
     list: [
       { title: '第一章 · 蓝莓慕斯by鸣折', href: '黑哨1.html' },
-      { title: '第二章 · 感官过载by水母', href: '黑哨2.html' }
+      { title: '第二章 · 感官过载by水母', href: '黑哨2.html' },
+      { title: '第三章 · 富士山下by水母', href: '黑哨3.html' }
     ]
   },
   shengzi: {
@@ -137,6 +147,13 @@ var articlesData = {
       { title: '第一章 · 圣子是好男孩吗？by水母', href: '圣子1.html' }
     ]
   },
+prosecutor: {
+  name: '检察官',
+  subtitle: '"过去吧，别打扰我发呆"',
+  list: [
+    { title: '第一章 · 喝下的东西用肉体来偿还吧by宽粉', href: '检察官1.html' }
+  ]
+},
   NP: {
     name: 'NP',
     subtitle: '"np小剧场，注意甄别"',
@@ -144,7 +161,8 @@ var articlesData = {
       { title: '第一章 · [你x暴君+刀锋]boss我们这样真的好吗by水母', href: 'np1.html' },
       { title: '第二章 · 一次单纯的旅行（1vs5）by雾Euro', href: 'np2.html' },
       { title: '第三章 · [你x幽灵+面试官]zc什么的还是放一边吧by水母', href: 'np3.html' },
-      { title: '第四章 · [你x面试官+愚者]肝帝的一百种使用方式by水母', href: 'np4.html' }
+      { title: '第四章 · [你x面试官+愚者]肝帝的一百种使用方式by水母', href: 'np4.html' },
+      { title: '第五章 · [你x某某人+但丁]为了boss哪怕是做小by水母', href: 'np4.html' }
     ]
   },
   kaiye: {
@@ -159,7 +177,9 @@ var articlesData = {
       { title: '第六章 · 请为西西莉亚开枝散叶吧！6', href: '开枝散叶6.html' },
       { title: '第七章 · 请为西西莉亚开枝散叶吧！7', href: '开枝散叶7.html' },
       { title: '第八章 · 请为西西莉亚开枝散叶吧！8', href: '开枝散叶8.html' },
-      { title: '第九章 · 请为西西莉亚开枝散叶吧！9', href: '开枝散叶9.html' }
+      { title: '第九章 · 请为西西莉亚开枝散叶吧！9', href: '开枝散叶9.html' },
+      { title: '第九章 · 请为西西莉亚开枝散叶吧！10', href: '开枝散叶10.html' }
+
     ]
   }
 };
