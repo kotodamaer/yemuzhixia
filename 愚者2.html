@@ -1,0 +1,1013 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>[你×愚者]boss这要挨不少电</title>
+  <style>
+    /* ---------- 主题变量 ---------- */
+    :root {
+      --bg-body: #fefefe;
+      --bg-note: #f9f9f9;
+      --border-light: #eee;
+      --border-medium: #ddd;
+      --text-primary: #333;
+      --text-secondary: #666;
+      --text-muted: #888;
+      --text-title: #222;
+      --text-section: #444;
+      --accent-line: #aaa;
+      --toggle-bg: #ffffff;
+      --toggle-border: #ccc;
+      --toggle-text: #333;
+    }
+    body.dark {
+      --bg-body: #1a1e24;
+      --bg-note: #252a31;
+      --border-light: #2e353e;
+      --border-medium: #3a424d;
+      --text-primary: #e0e0e0;
+      --text-secondary: #b0b8c0;
+      --text-muted: #8a939e;
+      --text-title: #f0f0f0;
+      --text-section: #d0d8e0;
+      --accent-line: #5a6570;
+      --toggle-bg: #2a313a;
+      --toggle-border: #4a5560;
+      --toggle-text: #e8e8e8;
+    }
+
+    /* ---------- 基础样式 ---------- */
+    body {
+      font-family: 'Georgia', 'Songti SC', serif;
+      line-height: 1.8;
+      color: var(--text-primary);
+      max-width: 800px;
+      margin: 40px auto;
+      padding: 20px;
+      background-color: var(--bg-body);
+      border-left: 1px solid var(--border-light);
+      border-right: 1px solid var(--border-light);
+      transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+    }
+
+    p {
+      margin-bottom: 1.2em;
+      text-indent: 2em;
+    }
+    .no-indent { text-indent: 0; }
+
+    .scene-break {
+      text-align: center;
+      margin: 2em 0;
+      color: var(--accent-line);
+      font-size: 0.9em;
+    }
+
+    .title {
+      text-align: center;
+      font-size: 1.8em;
+      margin-bottom: 1em;
+      color: var(--text-title);
+      border-bottom: 1px solid var(--border-medium);
+      padding-bottom: 0.5em;
+    }
+
+    .meta {
+      text-align: center;
+      font-size: 0.9em;
+      color: var(--text-secondary);
+      margin-bottom: 2em;
+      font-style: italic;
+      line-height: 1.6;
+    }
+
+    .end {
+      text-align: center;
+      margin-top: 3em;
+      padding-top: 1em;
+      border-top: 1px solid var(--border-medium);
+      font-weight: bold;
+      color: var(--text-secondary);
+    }
+
+    .section-title {
+      font-weight: bold;
+      color: var(--text-section);
+      margin: 1.5em 0 0.5em;
+      text-align: center;
+      font-size: 1.2em;
+    }
+
+    .dialogue {
+      margin-left: 2em;
+      font-style: italic;
+    }
+
+    .action {
+      color: var(--text-secondary);
+      font-style: italic;
+    }
+
+    .author-note {
+      font-size: 0.85em;
+      color: var(--text-muted);
+      margin-top: 2em;
+      padding: 1em;
+      background-color: var(--bg-note);
+      border-left: 3px solid var(--border-medium);
+      font-family: 'Arial', sans-serif;
+    }
+
+    /* ---------- 主题切换按钮 ---------- */
+    .theme-toggle {
+      position: fixed;
+      top: 24px;
+      right: 24px;
+      background-color: var(--toggle-bg);
+      color: var(--toggle-text);
+      border: 1px solid var(--toggle-border);
+      border-radius: 40px;
+      padding: 10px 18px;
+      font-size: 0.9rem;
+      font-family: Arial, sans-serif;
+      cursor: pointer;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+      transition: all 0.3s ease;
+      z-index: 9999;
+    }
+    .theme-toggle:hover { transform: scale(1.03); }
+    @media (max-width: 600px) {
+      body { margin: 20px auto; padding: 16px; }
+      .theme-toggle { top: 12px; right: 12px; padding: 8px 14px; font-size: 0.8rem; }
+      .title { font-size: 1.5em; }
+    }
+
+    /* ---------- 返回主页板块 ---------- */
+    .back-btn {
+      display: block;
+      text-align: center;
+      max-width: 400px;
+      margin: 2.5em auto 1em;
+      padding: 1em 1.5em;
+      background-color: var(--bg-note);
+      border: 1px solid var(--border-light);
+      border-radius: 8px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-family: 'Arial', sans-serif;
+      font-size: 0.95em;
+      transition: all 0.3s ease;
+    }
+    .back-btn:hover {
+      color: var(--text-primary);
+      background-color: var(--border-light);
+      transform: translateY(-1px);
+    }
+
+    /* ---------- 悬浮按钮 ---------- */
+    .float-btns {
+      position: fixed;
+      right: 20px;
+      bottom: 30px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      z-index: 999;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s;
+    }
+    .float-btns.show {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    .float-btn {
+      width: 46px;
+      height: 46px;
+      border-radius: 50%;
+      background: #282838;
+      border: 1px solid #3b3b4e;
+      color: #d6d0ec;
+      font-size: 1.2rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+      transition: 0.2s;
+    }
+    .float-btn:hover {
+      background: #3a3a52;
+      transform: scale(1.08);
+      color: #b8a6ff;
+    }
+
+    /* ---------- 上一章 / 下一章 ---------- */
+    .chapter-nav {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      margin-top: 30px;
+      padding-top: 20px;
+      border-top: 1px solid var(--border-medium);
+    }
+    .chapter-btn {
+      flex: 1;
+      text-align: center;
+      padding: 12px 16px;
+      border-radius: 20px;
+      background-color: var(--bg-note);
+      border: 1px solid var(--border-light);
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-size: 0.9rem;
+      transition: 0.2s;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .chapter-btn:hover {
+      background-color: var(--border-light);
+      color: var(--text-primary);
+    }
+    .chapter-btn.disabled {
+      opacity: 0.25;
+      pointer-events: none;
+      cursor: default;
+    }
+    @media (max-width:480px) {
+      .chapter-btn { font-size: 0.8rem; padding: 10px 10px; }
+    }
+
+    /* ==================== 8. 字数 / 阅读时长 ==================== */
+    .reading-stats {
+      text-align: center;
+      font-size: 0.85em;
+      color: var(--text-muted);
+      margin: -1em 0 2em;
+      font-family: 'Arial', sans-serif;
+      letter-spacing: 0.5px;
+    }
+
+    /* ==================== 9. 阅读进度条 ==================== */
+    .progress-bar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 0%;
+      height: 3px;
+      background: linear-gradient(90deg, #8f7fd6, #b8a6ff);
+      z-index: 99999;
+      transition: width 0.1s linear;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 阅读进度条 -->
+  <div class="progress-bar" id="progressBar"></div>
+
+  <!-- 主题切换按钮 -->
+  <button class="theme-toggle" id="themeToggle" aria-label="切换深浅色模式">
+    <span id="themeIcon">🌙</span>
+    <span id="themeText">深色模式</span>
+  </button>
+
+  <!-- ==================== 文章正文 ==================== -->
+  <h1 class="title">[你×愚者]boss这要挨不少电</h1>
+  <div class="meta">
+    by 水母<br>
+    进行一个熟悉的过去穿未来流程啊（好的这个水母真的很喜欢失乐园双子星）
+  </div>
+
+  <!-- 字数统计（自动生成） -->
+  <div class="reading-stats" id="readingStats"></div>
+
+  <div class="author-note">
+    很恶俗，是我流纯真高塔圣子穿越到熟男愚者身上<br>
+    ooc致歉，恶俗致歉，大量我流<br>
+    <br>
+    排雷：处男穿熟男（魂穿），腿环，项圈，"圣子装"，道具<br>
+    <br>
+    summer：因为一次意外，似乎召唤回了愚者的圣子时期呢？怎么意外的单纯呢……
+  </div>
+
+  <div class="scene-break">✦ ✦ ✦</div>
+
+  <p>夜幕沉沉地压在理查德公司顶层套房的落地窗外，城市的灯火被厚重的遮光帘隔绝在另一个世界。室内只亮着壁炉旁几盏暖黄色的落地灯，光线昏暗而暧昧，恰好将房间里那张铺着深色丝绒的大床照得轮廓分明。</p>
+
+  <p>你靠在床头的软垫上，手里转着一枚银币——这是从愚者那里学来的习惯。银币在你指间翻转，正面是月桂，反面是蔷薇，每一次旋转都发出细微的金属碰撞声。</p>
+
+  <p>浴室的水声停了。</p>
+
+  <p>你将银币收进口袋，视线投向那扇半掩的门。水汽从门缝里涌出来，裹着鸢尾花清冽而冷淡的香气——那是属于愚者的信息素，即便隔着整个房间也能辨认。</p>
+
+  <p>"换好了？"你问。</p>
+
+  <p>门内安静了几秒。</p>
+
+  <p>然后休·菲利克斯推门而出。</p>
+
+  <p>你看见他的第一眼，嘴角就不自觉地上扬了。</p>
+
+  <p>那件所谓的"圣子装"是你花了不少心思定制的。灵感来源于罗曼帝国高塔教廷的圣子礼服——层叠的白色织物、繁复的金线刺绣、象征纯洁与献祭的垂坠长摆。但你对原版做了大量修改，修改得几乎面目全非。</p>
+
+  <p>乍一看，那件衣服确实像一件庄严的圣袍。白色的主体面料质感极好，丝缎混纺，在灯光下泛着柔和的珠光。金色的刺绣沿着领口蜿蜒而下，勾勒出高塔教廷特有的星轨纹样。长长的下摆拖曳在地面上，边缘缀着细碎的流苏，走动时会发出极轻的簌簌声响。</p>
+
+  <p>但只要他一动，一切伪装就被撕开了。</p>
+
+  <p>那件"圣袍"两侧根本没有缝合，从腋下到髋骨全部敞开，大片冷白色的肌肤暴露在空气中。从正面看，前襟的布料只在胸口交叠了窄窄一层，稍有动作就会滑开，露出锁骨下方的大片肌肤。整件衣服全靠腰间一根金色丝带系着，那根带子细得可怜，仿佛只要轻轻一扯就会崩断，届时所有布料都会顺着他修长的身体滑落到地面。</p>
+
+  <p>愚者站在浴室门口，红色的眼眸里映着暖黄的灯光。水汽尚未完全散去，他黑色的短发微微潮湿，几缕碎发贴在额角，衬得那双眼睛更加深邃而锐利。</p>
+
+  <p>他低头看了一眼自己身上的衣服，又抬头看你。</p>
+
+  <p>"德弗兰公爵。"他叫你的假名，声音不急不缓，像在陈述一个与自己无关的事实，"你的审美越来越令人费解了。"</p>
+
+  <p>嘴上这么说，但他没有拒绝，甚至配合地向你走了几步。</p>
+
+  <p>那几步路足够让你看清所有细节。布料随着他的步伐晃动，两侧完全敞开的缝隙毫不遮掩地展示着他腰侧流畅的线条。丝缎贴着他的身体，在灯光下若隐若现地勾勒出底下的轮廓。他每走一步，下摆的流苏就轻轻扫过地面，发出沙沙的声响，像某种古老仪式中的低语。</p>
+
+  <p>你伸手，勾住了那根系在他腰间的金色丝带。</p>
+
+  <p>"过来。"</p>
+
+  <p>你轻轻一拽，他便顺着力道弯下腰。他的脸靠近了你，鸢尾花的香气变得更加浓郁，冷冽中带着沐浴后残余的温热水汽。</p>
+
+  <p>他的红眸平静地注视着你，嘴角微微勾起一个似笑非笑的弧度。</p>
+
+  <p>"如你所愿。"</p>
+
+  <p>你不记得是谁先吻的谁。或许是你扣住他的后颈将他拉低，或许是他自己俯下身来。总之下一秒，你的唇已经贴上了他的。</p>
+
+  <p>他的嘴唇很凉，带着薄薄的水润感。你咬住他的下唇，舌尖描摹着唇珠的弧度，然后长驱直入。他没有抵抗，甚至配合地微微张开嘴，任由你的舌头扫过他的上颚。</p>
+
+  <p>你一只手扣着他的后脑勺，另一只手沿着那件圣子装两侧的敞口探了进去。指尖触到的皮肤滑腻而微凉，你的掌心贴上他的腰侧，感受到肌肉在你的触碰下微微绷紧。</p>
+
+  <p>他的呼吸变了，变得更深、更慢，像在刻意控制什么。</p>
+
+  <p>你知道那些东西已经提前准备好了。在他换衣服之前，你亲手给他戴上的——大腿根部的金属腿环，严丝合缝地卡在那层薄薄的布料底下；脖颈上的铃铛项圈，银色的小铃铛在锁骨窝里安静地躺着，只要稍有动作就会发出清脆的声响；还有体内那个被调到最低档的小东西，此刻正在他身体深处发出几乎听不到的嗡鸣。</p>
+
+  <p>你知道，因为你刚才在吻他的时候，指尖拂过他腰侧的那一瞬间，他的呼吸停顿了半拍。</p>
+
+  <p>对于一个能看见所有未来走向的人来说，半拍的停顿已经是极大的失态。</p>
+
+  <p>你正要继续</p>
+
+  <p>空气突然变了。</p>
+
+  <p>那种变化很难形容。就好像房间里本来安静运转的某台精密仪器突然停机了，所有齿轮同时静止，连空气的流动都凝固了一瞬。</p>
+
+  <p>然后你感觉到，你扣住的那个后颈……僵硬了。</p>
+
+  <p>不是愚者平时那种故意的、带着几分矜持的僵硬，而是真正的、彻底的、像被电击中一样的僵硬。</p>
+
+  <p>你松开他的嘴唇，低头看向他。</p>
+
+  <p>他的红色眼睛睁得很大。</p>
+
+  <p>非常大。</p>
+
+  <p>大到你从来没有在休·菲利克斯的脸上见过这种表情。</p>
+
+  <p>他在发抖。</p>
+
+  <p>他的红眸里不再有那种洞察一切的锐利和从容。取而代之的是纯粹的慌乱，像一只突然被投入陌生水域的幼兽，本能地绷紧了全身的肌肉。</p>
+
+  <p>"……你是谁？"</p>
+
+  <p>他的声音变了。</p>
+
+  <p>音色没变，依然是休·菲利克斯的声线，低沉而干净。但语调完全不同了。你熟悉的愚者说话时总是不紧不慢，每个字都像经过精心计算，永远带着恰到好处的距离感和掌控力。</p>
+
+  <p>而现在这个声音，急促、紧绷、带着压不住的警惕，是个更年轻的声音。</p>
+
+  <p>你还没来得及回答，他已经猛地挣开你的手，向后退了一大步。</p>
+
+  <p>这一退，铃铛响了。</p>
+
+  <p>银色的小铃铛在他剧烈的动作中碰撞在一起，发出一连串清脆的叮铃声。他像是被这个声音吓到了一样，下意识地抬手去摸自己的脖子。</p>
+
+  <p>他的手指碰到了那只项圈。</p>
+
+  <p>皮革与金属的触感。柔软的内衬贴着喉结，正面坠着一颗蓝宝石，两侧各悬挂着一只小巧的银铃铛。</p>
+
+  <p>他愣住了。</p>
+
+  <p>然后他的手开始向下摸索，像是在确认自己身上到底发生了什么。他触到了胸口只交叠着窄窄一层的布料，触到了两侧大片暴露在外的皮肤，触到了那根维系整件衣服的细细金带。</p>
+
+<p>他的脸色变了。</p>
+
+<p>不是愚者平时那种可控的情绪变化——微微挑眉或者嘴角勾起一个弧度。而是真实的、无法掩饰的血色上涌。从耳尖开始，迅速蔓延到颧骨，然后烧遍整张脸。</p>
+
+<p>冷白的肤色让这片红显得格外剧烈。</p>
+
+<p>"这是什么……"他低头看着自己身上的圣子装，声音里的警惕变成了难以置信，"这是什么衣服？"</p>
+
+<p>他认出了那些纹样。金色的星轨刺绣、高塔教廷的圣徽、象征献祭的流苏，这些元素他每天都在高塔里见到。但它们从来不应该以这种形式出现。</p>
+
+<p>他的手继续向下。</p>
+
+<p>当他的指尖碰到大腿根部那只冰冷的金属腿环时，他整个人都僵住了。</p>
+
+<p>紧接着</p>
+
+<p>身体深处那个一直在运转的小东西突然换了一个频率，从低沉的嗡鸣变成了更加尖锐的震颤。</p>
+
+<p>"——！"</p>
+
+<p>他的膝盖瞬间软了。</p>
+
+<p>不是比喻，是真的软了。修长的身体毫无预兆地失去了支撑，他单膝跪在了地上，圣子装的长摆铺散开来，像一朵在暗色地毯上骤然盛开的白色花。</p>
+
+<p>铃铛又响了。</p>
+
+<p>叮铃。叮铃。</p>
+
+<p>他用一只手撑着地面，另一只手死死攥住了腰间的金色系带，指节发白。他低着头，黑色的碎发遮住了大半张脸，但你能看到他的耳尖红得快要滴血。</p>
+
+<p>"身体里……有东西……"他的声音从牙缝里挤出来，每个字都在发抖，"什么东西在……在动……"</p>
+
+<p>他不知道那是什么。</p>
+
+<p>你看着他跪在地上的样子。圣子装两侧的布料因为跪姿而彻底滑开，露出整条侧腰和半截胯骨的线条。金色的腿环卡在白皙的大腿根部，在灯光下泛着冷冽的光泽。他的身体在抖，不是因为冷，而是因为体内那个正在以稳定频率震颤的东西。</p>
+
+<p>这个身体是被你调教过的。</p>
+
+<p>每一寸皮肤的敏感带你都清楚，左侧腰际、后颈发际线下方两寸、膝窝内侧，这几个地方是你用无数个夜晚亲手开发出来的区域。</p>
+
+<p>这具身体太熟了，熟到仅凭体内一个小东西的低频震颤，就能让它的主人软了膝盖、红了眼眶、开始无法自控地分泌体液。</p>
+
+<p>但操控这具身体的灵魂，是全新的。</p>
+
+<p>你终于意识到了。</p>
+
+<p>你面前跪着的这个人，穿着你亲手挑选的情趣圣子装，脖子上戴着你扣上的铃铛项圈，大腿根部箍着你推上去的金属腿环，体内含着你塞进去的跳蛋</p>
+
+<p>但他不是你的愚者。</p>
+
+<p>他是少年时期的休·菲利克斯。</p>
+
+<p>高塔圣子。</p>
+
+<p>一个还没有走出罗曼帝国、还没有进入理查德公司、还没有学会用从容和疏离武装自己的年轻灵魂，被装进了一具已经被你彻底打开的、敏感到极致的成年身体里。</p>
+
+<p>他什么都不知道。</p>
+
+<p>他不知道铃铛项圈意味着什么，不知道腿环是做什么用的，不知道体内那个让他浑身发软的东西叫什么名字。</p>
+
+<p>他甚至不知道自己为什么会跪在一个陌生人面前，穿着一件几乎等于没穿的衣服，身体却在不受控制地起反应。</p>
+
+<p>你看着他的样子，舔了一下嘴唇。</p>
+
+<p>一个念头在你脑海中成型。它不道德、不正确、甚至可以说是趁人之危。</p>
+
+<p>但你是德弗兰公爵。你是西西莉亚最后的后裔。你从来不是一个好人。</p>
+
+<p>况且</p>
+
+<p>他的身体是你的。不管里面装着哪个时期的灵魂。</p>
+
+<p>你从床上起身，向他走了过去，蹲下身，与他平视。</p>
+
+<p>他抬起头，红色的眼眸里蓄着一层薄薄的水光，他咬着下唇，牙齿陷进柔软的唇肉里，留下浅浅的白痕。</p>
+
+<p>他在忍。</p>
+
+<p>即便什么都不懂，即便身体已经被快感折磨得几乎撑不住，这个年轻的灵魂依然本能地在忍耐。他不肯在陌生人面前露出更多的狼狈，哪怕此刻的他已经够狼狈了。</p>
+
+<p>高塔圣子的骄傲。</p>
+
+<p>你伸出手，托住了他的下巴。</p>
+
+<p>他的皮肤很烫。</p>
+
+<p>"别怕。"你的声音很轻，像在安抚一只竖起了所有刺的小动物，"我认识你。"</p>
+
+<p>他看着你，眼神里满是戒备，但身体却没有躲开你的触碰。</p>
+
+<p>不是因为信任，而是因为他的腿已经软得动不了了。体内的跳蛋还在震，持续不断地刺激着他从未被开发过的神经。这具身体的敏感程度远远超出了他的理解范围，每一次震颤都像是有一只无形的手从内部抚摸他，让他的大脑一片空白。</p>
+
+<p>"你认识我？"他的声音比刚才更哑了，带着一点因为过度忍耐而产生的鼻音，"我不认识你。我不该在这里——高塔……我应该在高塔——"</p>
+
+<p>"你在高塔之外。"你打断了他，拇指抚过他的下颌线，"具体的原因很复杂，但你暂时回不去。"</p>
+
+<p>他的瞳孔微微缩了一下。</p>
+
+<p>"回不去？"</p>
+
+<p>"暂时回不去。"你重复了一遍，然后低下头，嘴唇凑近他的耳边，"但你现在有一个更紧迫的问题需要解决。"</p>
+
+<p>你的气息拂过他的耳廓，他打了个激灵，整个人都抖了一下，铃铛发出清脆的碰撞声，项圈上的蓝宝石在灯光中闪烁。</p>
+
+<p>"你身体里的东西，"你用气声说，"如果不拿出来，会一直震下去。"</p>
+
+<p>"那就拿出来。"他几乎是立刻回答的，声音急切得没有经过任何思考。</p>
+
+<p>然后他反应过来，耳尖更红了。</p>
+
+<p>他被你放到了床上。</p>
+
+<p>深色丝绒衬着白色的圣子装，金色的刺绣和银色的铃铛散落在暗色的褶皱间。他仰面躺着，黑发散在枕头上，红色的眼睛望着天花板，胸口随着急促的呼吸起伏。</p>
+
+<p>每一次呼吸都会牵动胸前交叠的布料，露出更多的肌肤，又在下一次呼吸时合拢。</p>
+
+<p>你俯身，跪在他的身侧。</p>
+
+<p>"我要碰你了。"你说。这不是询问，是通知。但你给了他两秒钟拒绝的时间。</p>
+
+<p>他没有拒绝。</p>
+
+<p>他只是偏过头，不再看你。红色的眼睛盯着枕头旁边的某处空气，耳尖和颧骨上的红一路烧到了脖子。被铃铛项圈箍住的那截脖颈线条优美而脆弱，喉结微微滚动了一下。</p>
+
+<p>你的手伸向了他圣子装的下摆。</p>
+
+<p>白色的布料被你掀开，露出了他修长的双腿。金属腿环在右侧大腿根部，银色的金属贴着皮肤，恰好卡在最敏感的位置。腿环上有一个小小的蓝宝石坠饰，那是你选的，和他平时佩戴的蓝宝石饰品同款。</p>
+
+<p>你的手指勾住了腿环的边缘，微微向外拉了一下。</p>
+
+<p>"别——"</p>
+
+<p>他的身体弓了起来，腰部离开了床面。一声极短的气音从他紧咬的牙关里泄露出来。</p>
+
+<p>这具身体的大腿内侧是一等一的敏感地带。你知道，你亲手验证过无数次。只要指尖沿着腿环的边缘滑动，微微施加一点压力，他，或者说这具身体，就会不受控制地绷紧肌肉，然后在下一秒彻底瘫软。</p>
+
+<p>但对于小愚者来说，这是第一次。</p>
+
+<p>他不理解为什么仅仅是被碰了一下大腿，整个人就像被雷劈中一样从床上弹起来。他不理解为什么自己的身体会自作主张地做出这种反应——腰向上弓，腿不自觉地打开，嘴唇张合着却发不出完整的音节。</p>
+
+<p>"太、太奇怪了……"他用手背挡住自己的眼睛，声音抖得厉害，"这个身体……不是我的……不对——"</p>
+
+<p>"是你的。"你一边说，一边沿着他的大腿内侧向上滑去，"只是你还不了解它。"</p>
+
+<p>你的手指到达了那个位置。</p>
+
+<p>你能感觉到跳蛋震动的频率透过肌肤传到了你的指尖。小东西正在他体内勤勤恳恳地工作着，震得那一片皮肤都带着微微的颤栗。而周围已经湿透了</p>
+
+<p>"流了好多。"你的语气像在评价一件理所当然的事情。</p>
+
+<p>他呜咽了一声。</p>
+
+<p>这是你第一次从休·菲利克斯的嘴里听到呜咽，一声真正的、毫无伪装的、带着羞耻和困惑的呜咽。你那个成年的愚者从来不会呜咽，他会在极致快感中低声喘息，会用齿间的气音代替呻吟，偶尔在被逼到极限时从鼻腔里泄出一声黏腻的哼声，但绝不会呜咽。</p>
+
+<p>呜咽是属于这个年轻灵魂的。</p>
+
+<p>你的手指在入口处打了两个转，然后慢慢地、一点一点地探了进去。内壁是热的，湿的，柔软得不可思议。跳蛋在更深的位置震颤，你的指尖碰到了它冰凉的外壳。</p>
+
+<p>"我帮你拿出来。"你说。</p>
+
+<p>他猛地点头。</p>
+
+<p>你微微曲起手指，勾住跳蛋，然后故意用它在内壁上划了一下。</p>
+
+<p>他整个人痉挛了。</p>
+
+<p>不是小幅度的颤抖，是从脚趾到头顶的、全身性的痉挛。他的背离开床面弓成一个弧度，圣子装的布料彻底滑散，铃铛疯狂地响了起来。他挡在眼睛上的手落了下来，露出的红色眼睛已经完全失焦，瞳孔放大，眼角泛红，生理性的泪水终于从眼眶中溢出来，沿着太阳穴滑进了潮湿的黑发。</p>
+
+<p>他射了。</p>
+
+<p>就因为你用跳蛋在他体内蹭了一下那个点。</p>
+
+<p>白色的液体溅在圣子装的金色刺绣上，在纯洁的白色织物表面留下淫靡的痕迹。他的身体还在抽搐，大腿内侧的肌肉不受控制地痉挛着，将你的手指绞得更紧。</p>
+
+<p>高潮来得太突然，他甚至没有来得及理解发生了什么。快感像洪水一样淹没了他所有的感官，他的大脑一片空白，只剩下身体深处不断抽搐的余韵。</p>
+
+<p>"——啊……哈……什么……"他的声音完全碎了，断断续续的音节从颤抖的嘴唇间溢出来，"发生了什么……为什么……"</p>
+
+<p>他不知道自己刚才射了。</p>
+
+<p>他甚至不知道这叫什么。</p>
+
+<p>你看着他的样子——红眼睛湿漉漉的，泪痕挂在脸颊上，圣子装散乱地披在身上什么都遮不住，铃铛还在轻轻晃动发出细碎的声响</p>
+
+<p>你觉得你没有办法在这里停下来。</p>
+
+<p>但你还是把跳蛋拿了出来。</p>
+
+<p>小东西带着温热的体液和黏腻的水声离开了他的身体，你随手丢在床头柜上。它还在震，在柜面上嗡嗡地转着圈。</p>
+
+<p>他松了口气。</p>
+
+<p>被解除了持续刺激的身体终于不再那样不受控地颤抖了。他大口喘着气，胸口剧烈起伏，圣子装已经彻底乱了——前襟大敞，只有左肩上还挂着一片布料，腰间的金色系带歪到了一边，勉强维系着衣物最后的体面。</p>
+
+<p>他开始试图坐起来。</p>
+
+<p>"别动。"</p>
+
+<p>你按住了他的肩膀。</p>
+
+<p>他被你这轻描淡写的一按，又倒了回去。</p>
+
+<p>不是力气不够，这具身体的肌肉结构你太清楚了，修长但有力，核心稳定，正常状态下不会被这么轻易放倒。但刚才那次猝不及防的高潮几乎抽干了他所有的力气，现在的他连保持一个坐姿都很勉强。</p>
+
+<p>"你说要拿出来。"他盯着你，声音沙哑，"已经拿出来了。"</p>
+
+<p>"嗯。"你点头，"拿出来了。"</p>
+
+<p>"那——"</p>
+
+<p>"但你的身体还有问题。"你的膝盖抵进了他两腿之间，缓慢地、不容抗拒地将它们分开。布料随着这个动作滑落，右侧大腿上的金属腿环暴露在灯光下，腿环周围的皮肤被它勒出了浅浅的红痕。</p>
+
+<p>"等……"他试图合拢双腿，但你已经卡在了中间。</p>
+
+<p>他终于露出了一个接近愤怒的表情。你那个成年的愚者极少愤怒，他总是运筹帷幄，一切尽在掌握。但面前这个年轻的灵魂不一样。他的情绪管理还远没有达到日后那种滴水不漏的程度，恐惧、困惑、羞耻和愤怒全部写在脸上。</p>
+
+<p>"你到底是谁？"他的声音带着颤抖但依然锋利，"为什么……为什么我在这里，为什么这个身体是这样……你对我做了什么？"</p>
+
+<p>"我什么都没对你做。"你的拇指按上了他的髋骨，沿着骨骼的形状缓缓描画，"……暂时还没有。"</p>
+
+<p>他的瞳孔微微震动了一下，像是在高速运转着什么。你认得那个眼神。那是愚者在进行推演时特有的反应，只不过现在这双年轻的眼睛里，推演的速度更快，也更加急躁。</p>
+
+<p>"你在算。"你俯下身，嘴唇几乎贴上了他的耳廓，"在算所有可能的未来走向。在算我接下来会做什么，你要怎么应对，对吗？"</p>
+
+<p>他没有回答，但呼吸急促了一拍。</p>
+
+<p>"让我告诉你答案。"你用气声说，"你算出来的所有结果都指向同一个方向。"</p>
+
+<p>你的手指滑进了他的腿间。</p>
+
+<p>柔软的、湿润的、因为刚才的高潮而变得更加松弛的入口，毫不费力地吞进了你两根手指。</p>
+
+<p>他的后脑勺砸进了枕头里。</p>
+
+<p>"不……"</p>
+
+<p>"你看，"你的手指在他体内缓慢地弯曲、探索，精准地找到了那个点，你太熟悉了，闭着眼睛都能找到，"这具身体已经习惯了被打开。它知道接下来会发生什么，也知道该怎么配合。"</p>
+
+<p>你的指腹碾过那一点。</p>
+
+<p>他的腰猛地弹了起来，被你用另一只手按了回去。</p>
+
+<p>"你能感觉到吗?"你问,手指不停地在那个点上打转、按压,"这里。你推演了所有未来,但你推不出这具身体会给你什么反应。因为你没有经历过。"</p>
+
+<p>他咬紧了牙关,拼命想压制住喉咙里涌出来的声音。但这具身体已经被调教得太好了——你花了无数个夜晚教会它如何在你的触碰下融化、如何在恰到好处的刺激中崩溃、如何诚实地回应你每一个动作。</p>
+
+<p>现在它在履行你留下的所有训练。</p>
+
+<p>"唔——"一声克制不住的呻吟从他唇间泄出。</p>
+
+<p>铃铛又响了起来。项圈上的小银铃随着他颤抖的呼吸晃动,在寂静的房间里格外清晰。你低头,舌尖卷住了其中一只铃铛,牙齿轻轻咬住坠在他锁骨窝里的蓝宝石。</p>
+
+<p>他的身体又抖了一下。</p>
+
+<p>你松开铃铛,沿着他的锁骨向上,一路吻到他的喉结。他的喉结在你嘴唇下滚动,每一次吞咽都带着压抑的紧张。你用舌尖顶了一下那个凸起,同时手指在他体内狠狠按压了那个点。</p>
+
+<p>"啊——!"</p>
+
+<p>他的声音彻底破了。</p>
+
+<p>不是低哑的喘息,不是克制的气音,是真正的、高亢的、带着颤音的叫声。那个声音太过生涩,仿佛是他人生第一次发出这样的声音,连他自己都被吓到了。</p>
+
+<p>他的手胡乱地抓向你,想推开你,或者想抓住什么稳定自己。他的指尖碰到了你的肩膀,然后滑到了你的手臂上,力气大得在你皮肤上留下浅浅的红痕。</p>
+
+<p>你不在意。</p>
+
+<p>你抽出手指,听到了一声黏腻的水声和他不受控的颤音。然后你的手掌覆盖上了他腿间。</p>
+
+<p>"别——"他的声音几乎是哭腔了,"等等……我不——"</p>
+
+<p>"你不什么?"你的掌心开始有节奏地揉按,指尖描画着前端的轮廓,"不想要?可你的身体很诚实。"</p>
+
+<p>确实很诚实。你手下的那处已经完全勃起了,顶端渗出透明的液体,随着你的揉弄越来越多。他的腿不受控制地想要合拢,却被你用膝盖抵着,只能保持着那个羞耻的姿势。</p>
+
+<p>圣子装的布料此刻已经没有任何遮掩的作用。白色的织物散在他身体两侧,金色的刺绣被体液打湿了一片,银色的铃铛散落在深色的床单上。他整个人像一朵被展开的花,每一片花瓣都在你手下颤抖。</p>
+
+<p>"你还记得你穿的是什么吗?"你的另一只手拎起那片刺着星轨的布料,"圣子装。高塔的圣子应该穿什么样的衣服,你比我更清楚。"</p>
+
+<p>他的眼睛瞪大了,眼角的泪水还没干,又有新的泪水涌了上来。</p>
+
+<p>"不是……这不是——"</p>
+
+<p>"不是圣袍?"你笑了,手上的动作加快,"那你觉得是什么?献祭用的装饰品?还是等待被品尝的祭品?"</p>
+
+<p>你俯下身,舌尖舔过他胸口的肌肤。盐味的,带着淡淡的鸢尾花香。你一路向下,含住了他胸前的一点。</p>
+
+<p>他整个人都弹了起来。</p>
+
+<p>"不要——"</p>
+
+<p>但你的牙齿已经轻轻咬了下去。不重,只是微微施压,刚好越过舒适的界限,让那一点点疼痛和快感纠缠在一起,变成一种更加复杂的刺激。</p>
+
+<p>他的手抓进了你的头发里,不知道是想推开你还是想把你拉得更近。他的指尖在你头皮上无措地打转,力度时轻时重,完全没有章法。</p>
+
+<p>你松开嘴,看着那一点在你的侵扰下变成了深红色,然后转移到了另一侧。舌头、牙齿、嘴唇,你用了所有方法在他胸口留下痕迹。每一次碰触都能让他发出一声颤抖的喘息,每一次退开又会让他无意识地追随你的温度。</p>
+
+<p>"你知道自己现在的样子吗?"你抬起头,看着他的脸。</p>
+
+<p>他的脸已经红得不成样子了。红色从脸颊蔓延到了耳根,一路烧到了脖子,连锁骨上都泛着粉色</p>
+
+<p>汗水和泪水混在一起，让他看起来像刚从水里捞出来的。黑色的头发湿透了，几缕碎发粘在额头和脸颊上。</p>
+
+<p>"你看起来，"你凑近他，几乎鼻尖对鼻尖，"像一个正在被玩坏的圣子。"</p>
+
+<p>"我不是——"他试图反驳，但话说到一半就变成了呻吟。</p>
+
+<p>因为你的手重新握住了他。</p>
+
+<p>这一次不是轻柔的抚摸，而是紧实的、有力的握持。你的手掌包裹住他，从根部到顶端缓慢地撸动。每一次上行都会用拇指按压顶端的小孔，每一次下滑都会在根部稍作停留。</p>
+
+<p>节奏不快，但每一下都踩在他最敏感的点上。</p>
+
+<p>"啊……啊嗯……不行，太、太奇怪了——"</p>
+
+<p>他的声音已经完全失控了。每一次呼吸都带着黏腻的鼻音，每一个字都在颤抖。他想说完整的句子，想表达拒绝或者疑惑，但所有的语言能力都在你手下的快感中瓦解了。</p>
+
+<p>"哪里奇怪？"你故意问，"是这里？"</p>
+
+<p>你的拇指碾过顶端的缝隙。</p>
+
+<p>"还是这里？"</p>
+
+<p>你的另一只手伸到身后，手指再次探进了那个已经被开拓得柔软的入口。</p>
+
+<p>"不——！"他的腰又弹了起来，这一次你没有按住他。</p>
+
+<p>你看着他的身体在你的触碰下弓成一个剧烈的弧度，看着他的手胡乱地抓着床单，看着铃铛在他剧烈的动作中发出混乱的响声。</p>
+
+<p>他已经说不出完整的话了。嘴唇张合着，只能发出破碎的音节。"不、不行、要……要——"</p>
+
+<p>"要什么？"</p>
+
+<p>"我不知道……"他的声音带着明显的哭腔，"身体、身体不对，有什么东西……要出来——"</p>
+
+<p>他不知道那叫高潮。</p>
+
+<p>他只知道有什么东西正在身体深处聚集，像一股即将爆发的洪流，让他害怕又期待。那种感觉太陌生了，陌生到他甚至不知道该怎么描述，只能用最简单的词汇表达。</p>
+
+<p>"让它出来。"你在他耳边说。</p>
+
+<p>然后你加快了手上的速度。</p>
+
+<p>前后同时的刺激，双重的快感像两条交织的电流，在他身体里碰撞、融合、最终汇聚成一股无法抵抗的力量。</p>
+
+<p>他的眼睛睁大了，瞳孔剧烈地收缩又放大。</p>
+
+<p>"啊——啊啊——！"</p>
+
+<p>他射了。</p>
+
+<p>比刚才更加剧烈。</p>
+
+<p>白色的液体喷溅在你手上、他自己身上、圣子装上。他的身体像一张被拉满的弓，绷紧到了极限然后突然松开。所有的肌肉都在痉挛，从脚趾到头顶，每一寸皮肤都在颤抖。</p>
+
+<p>铃铛响得震天。</p>
+
+<p>他在高潮中痉挛了很久，这具身体的敏感度让余韵持续了比正常情况更长的时间。他的呼吸断断续续，每一次呼气都带着呜咽，眼泪止不住地从眼角流下来。</p>
+
+<p>不是因为痛苦。</p>
+
+<p>是因为快感太过强烈，超出了他所有的认知和承受范围，身体只能用这种最原始的方式来释放过载的刺激。</p>
+
+<p>你看着他慢慢从高潮中缓过来。</p>
+
+<p>他的身体终于软了下来，像一滩水一样摊在床上。胸口剧烈起伏，每一次呼吸都很费力。眼睛半睁着，红色的虹膜失去了焦点，湿漉漉地映着天花板的光。</p>
+
+<p>"你……"他的声音哑得厉害，"你对我做了什么……"</p>
+
+<p>不是质问，是真的在问。</p>
+
+<p>他真的不知道刚才经历的是什么。</p>
+
+<p>你没有立刻回答。</p>
+
+<p>你伸手，解开了他腰间那根勉强维系着圣子装的金色丝带。</p>
+
+<p>布料彻底滑落了。</p>
+
+<p>白色的织物从他身上滑下去，堆在床单上，只剩下脖子上的铃铛项圈和大腿上的金属腿环还戴在他身上。</p>
+
+<p>他就这样赤裸地躺在你面前，身上到处都是情色的痕迹——胸口红肿的两点、大腿内侧的红痕、以及那些还没有完全干掉的体液。</p>
+
+<p>"我什么都没做。"你终于回答了他的问题，俯下身，在他湿透的额发上落下一个吻，"只是让你的身体告诉你，它想要什么。"</p>
+
+<p>他的眼睛缓慢地转向你。</p>
+
+<p>那双红色的眼睛里，困惑、羞耻、恐惧和一点点尚未被他自己察觉的渴望混杂在一起。</p>
+
+<p>"可是，"他的声音很轻，轻到几乎听不见，"我不想要这个……"</p>
+
+<p>"嗯。"你点头，"你不想。但它想。"</p>
+
+<p>你的手指轻轻点了一下他的心口。</p>
+
+<p>"现在的问题是，"你直起身，居高临下地看着他，"你要怎么和它相处"</p>
+
+<p>他没有力气回答你了。</p>
+
+<p>高潮带来的疲惫像潮水一样淹没了他。他的眼皮越来越重，呼吸逐渐变得平稳而绵长。身体的本能在帮他逃避——当现实过于难以接受时，睡眠是最好的庇护所。</p>
+
+<p>你看着他在你面前沉沉睡去。</p>
+
+<p>铃铛安静了下来。腿环还戴在他大腿上，在灯光下泛着冷冽的光。你伸手，拇指摩挲过金属的边缘，感受它在皮肤上留下的浅浅凹痕。</p>
+
+<p>你正要起身带他去浴室清理</p>
+
+<p>空气突然变了。</p>
+
+<p>就像昨晚那种异样的波动，但方向完全相反。不是精密仪器的突然停机，而是所有齿轮重新归位、开始按照既定轨迹运转的瞬间。</p>
+
+<p>床上沉睡的人身体微微一震。</p>
+
+<p>然后他睁开了眼睛。</p>
+
+<p>红色的眸子在昏暗的光线中亮起，清明而深邃。不再是少年时期那种慌乱失措的眼神，而是你熟悉的、洞察一切的从容。</p>
+
+<p>他看向你，嘴角缓缓勾起一个浅浅的弧度。</p>
+
+<p>"德弗兰。"他的声音恢复了那种不疾不徐的节奏，带着刚刚经历过极致快感后的沙哑，"玩得开心吗？"</p>
+
+<p>你挑眉。</p>
+
+<p>"你回来了。"</p>
+
+<p>"嗯。"他撑着床坐起来，动作慢条斯理。被子从他身上滑落，露出那些你刚才留下的痕迹——胸口的红肿、大腿内侧的指痕、还有那些尚未完全干涸的体液。</p>
+
+<p>他低头看了一眼自己的身体，又抬头看你，眼中闪过一丝餍足的笑意。</p>
+
+<p>"看来你很喜欢那件圣子装。"</p>
+
+<p>"所以你早就知道。"你陈述道。</p>
+
+<p>"当然。"他伸手，指尖抚过脖颈上的铃铛项圈，"这是我推演出的、唯一能够修正那个时间节点的方法。让少年时期的我来到这里，经历一些……必要的启蒙。"</p>
+
+<p>他的手指勾住项圈上的小铃铛，轻轻晃了一下。清脆的声音在寂静的房间里格外清晰。</p>
+
+<p>"而你，"他抬起眼，红眸里映着你的身影，"完成得很好。"</p>
+
+<p>你失笑："你就是想被操。"</p>
+
+<p>"这只是附加价值。"他不否认，反而顺着你的话继续，"不过既然已经这样了"</p>
+
+<p>他向你伸出手，修长的手指在空气中微微勾了一下。</p>
+
+<p>那是邀请的姿态。</p>
+
+<p>"德弗兰，过来。"他的声音低沉而蛊惑，"既然让小圣子体验了一次，现在的我也想要一个……完整的欢迎仪式。"</p>
+
+<p>你看着他</p>
+
+<p>身上戴着铃铛项圈和金属腿环，身体上到处是你留下的痕迹，却依然能用那种从容不迫的姿态向你发出邀请。</p>
+
+<p>这才是你的愚者。</p>
+
+<p>你走向他。</p>
+
+<p>铃铛再次响起，伴随着窗外渐亮的天色，在这个被命运修正过的清晨里，奏响新的乐章。</p>
+
+<div class="end">——END——</div>
+
+<div class="author-note">
+  水母点评：很嫩，很润
+</div>
+
+<!-- ==================== 上一章 / 下一章 ==================== -->
+<div class="chapter-nav">
+  <a href="#" class="chapter-btn" id="prevBtn">← 上一章</a>
+  <a href="#" class="chapter-btn" id="nextBtn">下一章 →</a>
+</div>
+
+<!-- ==================== 返回主页 ==================== -->
+<a href="index.html" class="back-btn">⬅ 返回主页</a>
+
+<!-- ==================== 悬浮按钮 ==================== -->
+<div class="float-btns" id="floatBtns">
+  <button class="float-btn" id="btnTop" title="回到顶部">↑</button>
+  <a href="index.html" class="float-btn" title="返回目录">📖</a>
+</div>
+
+<!-- ==================== 脚本 ==================== -->
+<script src="data.js"></script>
+<script>
+  (function() {
+    // ===== 记住阅读位置 =====
+    var key = 'jellyfish_scroll_' + location.pathname;
+    var saved = localStorage.getItem(key);
+    if (saved) {
+      window.addEventListener('load', function() {
+        window.scrollTo(0, parseInt(saved, 10));
+      });
+    }
+    var timer = null;
+    window.addEventListener('scroll', function() {
+      if (timer) return;
+      timer = setTimeout(function() {
+        localStorage.setItem(key, window.scrollY);
+        timer = null;
+      }, 300);
+    });
+
+    // ===== 悬浮按钮显示/隐藏 =====
+    var floatBtns = document.getElementById('floatBtns');
+    var btnTop = document.getElementById('btnTop');
+
+    window.addEventListener('scroll', function() {
+      if (window.scrollY > 200) {
+        floatBtns.classList.add('show');
+      } else {
+        floatBtns.classList.remove('show');
+      }
+    });
+
+    btnTop.addEventListener('click', function() {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+
+    // ===== 上一章 / 下一章（自动识别） =====
+    var currentFile = decodeURIComponent(location.pathname.split('/').pop());
+    var currentRole = null;
+    var currentIndex = -1;
+
+    if (typeof articlesData !== 'undefined') {
+      Object.keys(articlesData).forEach(function(roleKey) {
+        var role = articlesData[roleKey];
+        role.list.forEach(function(article, idx) {
+          if (article.href === currentFile) {
+            currentRole = roleKey;
+            currentIndex = idx;
+          }
+        });
+      });
+    }
+
+    if (currentRole !== null && currentIndex >= 0) {
+      var roleData = articlesData[currentRole];
+      var prevBtn = document.getElementById('prevBtn');
+      var nextBtn = document.getElementById('nextBtn');
+
+      if (currentIndex > 0) {
+        prevBtn.href = roleData.list[currentIndex - 1].href;
+      } else {
+        prevBtn.classList.add('disabled');
+        prevBtn.href = 'javascript:void(0)';
+      }
+
+      if (currentIndex < roleData.list.length - 1) {
+        nextBtn.href = roleData.list[currentIndex + 1].href;
+      } else {
+        nextBtn.classList.add('disabled');
+        nextBtn.href = 'javascript:void(0)';
+      }
+    }
+
+    // ===== 字数 / 阅读时长 =====
+    var statsEl = document.getElementById('readingStats');
+    if (statsEl) {
+      var bodyEl = document.querySelector('body');
+      var clone = bodyEl.cloneNode(true);
+      // 去掉脚本、样式、按钮等
+      clone.querySelectorAll('script, style, button, a, .theme-toggle, .float-btns, .chapter-nav, .back-btn, .progress-bar, .reading-stats').forEach(function(el) { el.remove(); });
+      var text = clone.innerText || '';
+      var cleanText = text.replace(/\s+/g, '');
+      var charCount = cleanText.length;
+      var minutes = Math.max(1, Math.round(charCount / 400));
+      statsEl.textContent = '约 ' + charCount + ' 字 · 阅读约 ' + minutes + ' 分钟';
+    }
+
+    // ===== 阅读进度条 =====
+    var progressBar = document.getElementById('progressBar');
+    function updateProgress() {
+      var scrollTop = window.scrollY;
+      var docHeight = document.documentElement.scrollHeight - window.innerHeight;
+      var percent = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+      progressBar.style.width = Math.min(100, Math.max(0, percent)) + '%';
+    }
+    window.addEventListener('scroll', updateProgress);
+    window.addEventListener('resize', updateProgress);
+    updateProgress();
+  })();
+</script>
+
+<!-- ==================== 主题切换脚本 ==================== -->
+<script>
+  (function() {
+    const btn = document.getElementById('themeToggle');
+    const icon = document.getElementById('themeIcon');
+    const text = document.getElementById('themeText');
+    const body = document.body;
+    let isDark = false;
+
+    function applyTheme(dark) {
+      body.classList.toggle('dark', dark);
+      icon.textContent = dark ? '☀️' : '🌙';
+      text.textContent = dark ? '浅色模式' : '深色模式';
+      localStorage.setItem('novel-theme', dark ? 'dark' : 'light');
+    }
+
+    const saved = localStorage.getItem('novel-theme');
+    if (saved === 'dark') { isDark = true; }
+    else if (saved === 'light') { isDark = false; }
+    else { isDark = window.matchMedia('(prefers-color-scheme: dark)').matches; }
+    applyTheme(isDark);
+
+    btn.addEventListener('click', () => {
+      isDark = !isDark;
+      applyTheme(isDark);
+    });
+  })();
+</script>
+
+</body>
+</html>
