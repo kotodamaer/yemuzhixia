@@ -1,0 +1,673 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>[你×提线人]不要乱喝boss递来的牛奶</title>
+  <style>
+    /* ---------- 主题变量 ---------- */
+    :root {
+      --bg-body: #fefefe;
+      --bg-note: #f9f9f9;
+      --border-light: #eee;
+      --border-medium: #ddd;
+      --text-primary: #333;
+      --text-secondary: #666;
+      --text-muted: #888;
+      --text-title: #222;
+      --text-section: #444;
+      --accent-line: #aaa;
+      --toggle-bg: #ffffff;
+      --toggle-border: #ccc;
+      --toggle-text: #333;
+    }
+    body.dark {
+      --bg-body: #1a1e24;
+      --bg-note: #252a31;
+      --border-light: #2e353e;
+      --border-medium: #3a424d;
+      --text-primary: #e0e0e0;
+      --text-secondary: #b0b8c0;
+      --text-muted: #8a939e;
+      --text-title: #f0f0f0;
+      --text-section: #d0d8e0;
+      --accent-line: #5a6570;
+      --toggle-bg: #2a313a;
+      --toggle-border: #4a5560;
+      --toggle-text: #e8e8e8;
+    }
+
+    /* ---------- 基础样式 ---------- */
+    body {
+      font-family: 'Georgia', 'Songti SC', serif;
+      line-height: 1.8;
+      color: var(--text-primary);
+      max-width: 800px;
+      margin: 40px auto;
+      padding: 20px;
+      background-color: var(--bg-body);
+      border-left: 1px solid var(--border-light);
+      border-right: 1px solid var(--border-light);
+      transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+    }
+
+    p {
+      margin-bottom: 1.2em;
+      text-indent: 2em;
+    }
+    .no-indent { text-indent: 0; }
+
+    .scene-break {
+      text-align: center;
+      margin: 2em 0;
+      color: var(--accent-line);
+      font-size: 0.9em;
+    }
+
+    .title {
+      text-align: center;
+      font-size: 1.8em;
+      margin-bottom: 1em;
+      color: var(--text-title);
+      border-bottom: 1px solid var(--border-medium);
+      padding-bottom: 0.5em;
+    }
+
+    .meta {
+      text-align: center;
+      font-size: 0.9em;
+      color: var(--text-secondary);
+      margin-bottom: 2em;
+      font-style: italic;
+      line-height: 1.6;
+    }
+
+    .end {
+      text-align: center;
+      margin-top: 3em;
+      padding-top: 1em;
+      border-top: 1px solid var(--border-medium);
+      font-weight: bold;
+      color: var(--text-secondary);
+    }
+
+    .section-title {
+      font-weight: bold;
+      color: var(--text-section);
+      margin: 1.5em 0 0.5em;
+      text-align: center;
+      font-size: 1.2em;
+    }
+
+    .dialogue {
+      margin-left: 2em;
+      font-style: italic;
+    }
+
+    .action {
+      color: var(--text-secondary);
+      font-style: italic;
+    }
+
+    .author-note {
+      font-size: 0.85em;
+      color: var(--text-muted);
+      margin-top: 2em;
+      padding: 1em;
+      background-color: var(--bg-note);
+      border-left: 3px solid var(--border-medium);
+      font-family: 'Arial', sans-serif;
+    }
+
+    /* ---------- 主题切换按钮 ---------- */
+    .theme-toggle {
+      position: fixed;
+      top: 24px;
+      right: 24px;
+      background-color: var(--toggle-bg);
+      color: var(--toggle-text);
+      border: 1px solid var(--toggle-border);
+      border-radius: 40px;
+      padding: 10px 18px;
+      font-size: 0.9rem;
+      font-family: Arial, sans-serif;
+      cursor: pointer;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+      transition: all 0.3s ease;
+      z-index: 9999;
+    }
+    .theme-toggle:hover { transform: scale(1.03); }
+    @media (max-width: 600px) {
+      body { margin: 20px auto; padding: 16px; }
+      .theme-toggle { top: 12px; right: 12px; padding: 8px 14px; font-size: 0.8rem; }
+      .title { font-size: 1.5em; }
+    }
+
+    /* ---------- 返回主页板块 ---------- */
+    .back-btn {
+      display: block;
+      text-align: center;
+      max-width: 400px;
+      margin: 2.5em auto 1em;
+      padding: 1em 1.5em;
+      background-color: var(--bg-note);
+      border: 1px solid var(--border-light);
+      border-radius: 8px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-family: 'Arial', sans-serif;
+      font-size: 0.95em;
+      transition: all 0.3s ease;
+    }
+    .back-btn:hover {
+      color: var(--text-primary);
+      background-color: var(--border-light);
+      transform: translateY(-1px);
+    }
+
+    /* ---------- 悬浮按钮 ---------- */
+    .float-btns {
+      position: fixed;
+      right: 20px;
+      bottom: 30px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      z-index: 999;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s;
+    }
+    .float-btns.show {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    .float-btn {
+      width: 46px;
+      height: 46px;
+      border-radius: 50%;
+      background: #282838;
+      border: 1px solid #3b3b4e;
+      color: #d6d0ec;
+      font-size: 1.2rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+      transition: 0.2s;
+    }
+    .float-btn:hover {
+      background: #3a3a52;
+      transform: scale(1.08);
+      color: #b8a6ff;
+    }
+
+    /* ---------- 上一章 / 下一章 ---------- */
+    .chapter-nav {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      margin-top: 30px;
+      padding-top: 20px;
+      border-top: 1px solid var(--border-medium);
+    }
+    .chapter-btn {
+      flex: 1;
+      text-align: center;
+      padding: 12px 16px;
+      border-radius: 20px;
+      background-color: var(--bg-note);
+      border: 1px solid var(--border-light);
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-size: 0.9rem;
+      transition: 0.2s;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .chapter-btn:hover {
+      background-color: var(--border-light);
+      color: var(--text-primary);
+    }
+    .chapter-btn.disabled {
+      opacity: 0.25;
+      pointer-events: none;
+      cursor: default;
+    }
+    @media (max-width:480px) {
+      .chapter-btn { font-size: 0.8rem; padding: 10px 10px; }
+    }
+
+    /* ==================== 8. 字数 / 阅读时长 ==================== */
+    .reading-stats {
+      text-align: center;
+      font-size: 0.85em;
+      color: var(--text-muted);
+      margin: -1em 0 2em;
+      font-family: 'Arial', sans-serif;
+      letter-spacing: 0.5px;
+    }
+
+    /* ==================== 9. 阅读进度条 ==================== */
+    .progress-bar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 0%;
+      height: 3px;
+      background: linear-gradient(90deg, #8f7fd6, #b8a6ff);
+      z-index: 99999;
+      transition: width 0.1s linear;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 阅读进度条 -->
+  <div class="progress-bar" id="progressBar"></div>
+
+  <!-- 主题切换按钮 -->
+  <button class="theme-toggle" id="themeToggle" aria-label="切换深浅色模式">
+    <span id="themeIcon">🌙</span>
+    <span id="themeText">深色模式</span>
+  </button>
+
+  <!-- ==================== 文章正文 ==================== -->
+  <h1 class="title">[你×提线人]不要乱喝boss递来的牛奶</h1>
+  <div class="meta">
+    写的有点匆忙了，嗯对不要在意逻辑<br>
+    by水母
+  </div>
+
+  <!-- 字数统计（自动生成） -->
+  <div class="reading-stats" id="readingStats"></div>
+
+  <div class="author-note">
+    <p><strong>排雷：</strong>双性，很嬷，水煎，迷药，很凝，还有一点造谣</p>
+    <p><strong>summer：</strong>小猫……</p>
+  </div>
+
+  <p>你在厨房里温牛奶的时候，时钟刚过十一点。</p>
+
+  <p>锅底冒出细密的气泡，你关掉火，把牛奶倒进那只他专用的灰蓝色马克杯里，他嘴上说随便用哪个杯子都行，但你注意到他每次都会伸手拿这一只。</p>
+
+  <p>你从口袋里取出一只指甲盖大小的玻璃瓶，拧开盖子。瓶中液体澄净无色，几乎没有气味。你倾斜瓶身，让极微量的药液滑落进温热的牛奶里，大约一滴的十分之一。这个剂量你反复核算过，只会让人陷入深度睡眠，不影响呼吸频率，不干扰心脏节律，体感上和睡得极沉没有任何分别。</p>
+
+  <p>你用勺子搅了搅，牛奶转出一个小小的漩涡，很快归于平静。</p>
+
+  <p>端着杯子走进卧室的时候，尤金·怀尔德正靠在床头看文献。他已经从轮椅上转移到了床上，机械管家刚替他收好腿部的辅助支架，正安静地退向角落充电。床头灯把他的银白长发照出一层暖黄的边，但他本人的气质和暖黄没有半点关系。他的手指划过平板上密密麻麻的公式，眉头微微皱着，显然对某篇论文的推导过程不太满意。</p>
+
+  <p>"睡前牛奶。"你把杯子放在他床头柜上。</p>
+
+  <p>他的视线没从屏幕上移开。"……几点了。"</p>
+
+  <p>"十一点过七分。"</p>
+
+  <p>"嗯。"</p>
+
+  <p>他仍然在看文献。你没催他，走去浴室洗了把脸。等你回来的时候，马克杯已经空了，被他随手搁在柜角，杯底残留着一层薄薄的奶膜。他把平板放到一边，伸手关了床头灯。</p>
+
+  <p>黑暗里你听见他翻了个身，侧躺着把被子拽上来。</p>
+
+  <p>"晚安。"他的声音含混简短，已经带了困倦。</p>
+
+  <p>"晚安。"你说。</p>
+
+  <p>你躺在他旁边，睁着眼睛，安静地等。</p>
+
+  <p>呼吸声逐渐变得绵长而均匀。冷杉味的信息素在黑暗中缓慢弥散，没有任何波动，像一片无风的针叶林。你侧过头，借着窗帘缝隙透进来的微弱光线看他。他的睫毛很长，垂下来在脸颊上落了一小片阴影。睡着的时候，那些白天刻在眉眼间的锋利线条全都松弛了，他看起来年轻了很多，嘴唇微微张开，呼吸从中间溢出来，安静得像实验室关闭所有仪器之后的寂静。</p>
+
+  <p>你又等了二十分钟。</p>
+
+  <p>然后你伸手碰了碰他的肩膀，轻轻推了一下。</p>
+
+  <p>没有反应。</p>
+
+  <p>你推得重了些，指尖按进他肩窝的软肉里。他的眉头动了一下，像是感觉到了什么，但身体没有任何醒来的迹象。呼吸仍然平稳，心跳仍然舒缓。</p>
+
+  <p>你坐起来。</p>
+
+  <p>被子被你慢慢掀开。他今晚穿的是深灰色的长袖睡衣，扣子一直系到领口，下身是同色的宽松睡裤。他侧躺的姿势让睡衣在腰侧拧出褶皱，露出一截极窄的腰线，皮肤冷白，几乎在暗光里发着微微的光。</p>
+
+  <p>你没有急着动手。你先把他翻成仰躺的姿势。他的身体很轻，这件事你在第一次抱他的时候就知道了。长年坐在轮椅上让他的下肢肌肉不够丰满，但上身因为操控精密仪器的缘故保有一定力量，此刻完全放松着，任你摆布。他的头偏向一侧，银白长发散在枕头上，几缕搭在脸颊边。</p>
+
+  <p>你俯下身，嘴唇贴上他的脖颈。他的皮肤凉凉的，冷杉的气味在你鼻尖变得浓郁。你张嘴，舌尖抵住他颈侧的脉搏点，感受到那下面沉稳跳动的血管。</p>
+
+  <p>没有醒。</p>
+
+  <p>你的手指从他的领口开始，一颗一颗解开扣子。第一颗，锁骨露出来，骨节形状分明。第二颗，第三颗，胸膛上方的皮肤暴露在空气里，他无意识地缩了一下，大约是觉得凉。你停了几秒，等他的呼吸重新平稳，继续往下。</p>
+
+  <p>所有扣子解开之后，睡衣从中间分开，他的上身完整地呈现在你面前。
+  你把手移到他的睡裤腰带上。松紧带很容易扯开，你把裤子连同内裤一起往下拽。他的双腿因为长期康复训练，比你最初见他时好了很多，小腿肌肉有了轮廓，但膝盖仍然偏细，胫骨的线条清晰。裤子被你褪到脚踝，最终从脚尖脱落，丢在床尾。</p>
+
+  <p>他全身赤裸地躺在床上，只有解开的睡衣还挂在两侧手臂上。</p>
+
+  <p>你跪坐在他双腿之间，用膝盖把他的腿分开。他的大腿内侧皮肤很薄，能看到下面青色的血管纹路。你把他的腿弯起来，膝盖朝外打开。他的身体顺从地被你摆弄着，因为沉睡而完全没有抵抗，那些清醒时绷得紧紧的肌肉群此刻全部松弛，柔软得不像他本人。</p>
+
+  <p>他的身体构造和普通男性不同。阴茎下方是一道隐蔽的缝隙，外阴的形状完整，平时被他遮掩得很好。你在第一次和他上床的时候就见过了，当时他的表情几乎算得上凶狠，咬着牙不肯发出声音，浑身僵硬得像一块冰。后来熟悉了才好了一些，但他仍然不喜欢你在那个位置上停留太久，总会伸手把你的脑袋推开。</p>
+
+  <p>现在他推不了你了。</p>
+
+  <p>你用手指拨开他外阴的唇瓣。颜色很浅，嫩粉偏白，和他全身的色调一致。阴蒂的位置你很熟悉，在最上方，被包皮覆盖着，小小的一粒。你没有先碰那里，而是把手指往下移，指腹贴着他的前庭缓慢地摩擦。</p>
+
+  <p>干燥的。</p>
+
+  <p>你不着急。你的中指沿着阴道口的边缘画圈，不进去，只是反复在入口处打转。他的身体比大脑诚实，即便在沉睡中也对刺激有所回应。大约过了两三分钟，你的指腹开始感觉到湿意。一开始只是微微的潮润，然后慢慢变得明显，液体从阴道口渗出来，沾在你的指尖上，温热而黏稠。</p>
+
+  <p>你把中指推进去了一个指节。</p>
+
+  <p>他的身体立刻有了反应。呼吸节奏改变了，不再是之前那种深长均匀的睡眠呼吸，而是变得稍微急促了一点。他的眉头皱起来，嘴唇抿紧，头在枕头上偏了偏。但他没有醒。药液让他困在深度睡眠的表层，意识模糊地接收着身体传来的信号，却无法真正浮出水面。</p>
+
+  <p>你的手指继续往里推。他的阴道内壁温热柔软，紧紧地吸附着你的手指，那种包裹感湿润而有力。你推到第二个指节的时候，他的大腿肌肉不自觉地绷紧了一下，膝盖往内收拢，试图合上，被你用另一只手按住了大腿内侧，重新掰开。</p>
+
+  <p>"唔……"</p>
+
+  <p>他发出了第一声含混的呻吟。声音很轻，像是从喉咙深处挤出来的，带着沉睡特有的沙哑。</p>
+
+  <p>你把手指整根没入，然后缓慢地抽出来。指尖带出一小股透明的液体，在暗光里拉出一条短暂的丝线。你重新推进去，这次加了一根无名指。两根手指同时进入的时候，他的阴道明显地收缩了一下，内壁痉挛似的绞紧你的手指。他的后腰弓起了一个弧度，又很快落回床面。</p>
+
+  <p>你开始规律地抽插。两根手指并拢，在他体内进出，每一次都推到底，指腹刻意碾过前壁那块稍微粗糙的位置。那是他最敏感的点，你摸过很多次了，清醒的时候碰到那里他会骂你，声音又急又哑，手指掐进你的肩膀里。</p>
+
+  <p>现在他骂不了你，但身体的反应比清醒时还要剧烈。</p>
+
+  <p>他的阴道开始大量分泌液体。每一次你的手指抽出来的时候，都能听到轻微的水声，黏腻而色情。液体顺着你的手指流到掌心，又从掌心滑到他的会阴，打湿了身下的床单。他的阴蒂已经充血肿胀了，从包皮下面探出来，颜色变深，微微颤动着。</p>
+
+  <p>"嗯……唔……"</p>
+
+  <p>他的呻吟变得频繁起来。不是清醒时那种被压在喉咙里的闷哼，而是完全不设防的，细碎的，带着哭腔的声音。他的眼角渗出了一点水光，不知道是生理性泪液还是别的什么。银白的长发被汗打湿了几缕，贴在脸颊和脖颈上。他的嘴唇张开着，因为急促的呼吸而显得有些干燥。</p>
+
+  <p>你的手指加快了速度。抽插的动作从缓慢变得凌厉，两根手指在他体内快速进出，每一次都精准地擦过前壁的敏感点。水声变得很响，在安静的卧室里格外清晰，混着他断断续续的呜咽。</p>
+
+  <p>他的双腿开始发抖。那种无法自控的、从大腿根部蔓延到小腿的细密颤抖。他的脚趾蜷缩起来，脚背绷成一条紧绷的线。他的手指无意识地抓住了床单，指节发白，把布料攥出深深的褶皱。</p>
+
+  <p>你俯下身，嘴唇凑近他的耳朵。他的耳廓很薄，边缘泛着粉色，冷杉味的信息素此刻完全乱了调，浓郁到几乎带了甜腻的尾调，和平时那股清冷疏离的味道截然不同。</p>
+
+  <p>你没有说话。你只是用嘴唇含住他的耳垂，轻轻咬了一下。</p>
+
+  <p>他的整个身体猛地弹了一下。</p>
+
+  <p>"啊……不……"</p>
+
+  <p>声音是从梦境和清醒的夹缝里挤出来的。他的眼皮颤动得很厉害，像是在拼命想要睁开，但那微量的药液把他牢牢按在了睡眠的边界上。他的意识大约是模糊地感知到了身体正在发生的事情，但无法真正清醒过来做出判断，只能被动地承受。</p>
+
+  <p>你的拇指按上了他的阴蒂。</p>
+
+  <p>这一下的反应几乎是过激的。他的后腰整个弓起来，像被电击了一样。阴道内壁疯狂地收缩，绞着你的手指不放。他的嘴张开，发出了一声清晰的、拖长的呜咽，尾音上扬，带着哭腔，带着颤抖，带着压抑不住的快感。</p>
+
+  <p>你的拇指开始揉他的阴蒂。画圈，按压，拨弄，指腹在那颗充血的小粒上反复摩擦。他的反应已经控制不住了。双腿抖得像筛子一样，大腿根部的肌肉抽搐着，两条腿想合拢又被你顶在中间，只能大开着，把最隐秘的位置完全暴露给你。</p>
+
+  <p>他在哭。</p>
+
+  <p>不是清醒时那种倔强地咬着嘴唇的忍耐，而是真的在哭。泪水从紧闭的眼角溢出来，沿着太阳穴滑进银白的发丝里。他的嘴唇颤抖着，断断续续地发出含混不清的音节，听不清在说什么，也许什么都没在说，只是喉咙不受控制地发出声音。</p>
+
+  <p>你的手指同时发力。体内的两根手指快速抽插，指腹用力碾过前壁的敏感点，拇指按着阴蒂画圈。内外同时刺激。他的阴道已经湿透了，液体多到开始从指缝间流出来，温热的，粘稠的，把你整只手都浸湿了。水声大到遮盖了他的呜咽，又大到遮盖不了他的呜咽。</p>
+
+  <p>"呜……嗯……啊……"</p>
+
+  <p>他的身体开始出现高潮前兆。腹部肌肉不受控制地收紧，阴道内壁有节律地痉挛，频率越来越快。他的呼吸已经完全乱了，变成了短促的、带着哭腔的喘息。他的手指死死攥着床单，指甲几乎要把布料戳穿。</p>
+
+  <p>你加大了手指的力度。</p>
+
+  <p>他射了。</p>
+
+  <p>阴道内壁猛烈收缩，一股温热的液体涌出来，浸透了你的手掌。他的全身都在抽搐，后腰弓成一个僵硬的弧度，维持了几秒，然后像断了线一样跌落回床面。阴蒂还在搏动，每一下都带着余韵的颤栗。他的大腿内侧全是水渍，会阴处一片泥泞。</p>
+
+  <p>你慢慢抽出手指。指尖脱离的时候，他的阴道还在微微收缩，像是挽留又像是排斥。你低头看了一眼，穴口因为长时间的刺激泛着红，微微翕张，液体缓慢地从里面渗出来。</p>
+
+  <p>他的呼吸逐渐平复下来。呜咽声停了，眼角的泪痕还在，但沉睡重新将他拉了回去。他的身体放松了，刚才绷紧的肌肉全都松弛下来，手指也从床单上松开，留下一团深深的皱痕。</p>
+
+  <p>你去浴室洗了手，拿了湿毛巾回来，替他把身下擦干净。换了被他弄湿的那一小块床单，把干净的睡裤重新给他穿上。你没有把睡衣扣起来，只是把两片衣襟合拢，替他拉好被子。</p>
+
+  <p>做完这些之后你躺回他身边。他在睡梦中无意识地往你这边蹭了蹭，额头抵上你的肩膀。冷杉味的信息素已经恢复了平时的频率，清冷干净，像什么都没有发生过。</p>
+
+  <p>你闭上眼睛。</p>
+
+  <div class="scene-break">✦ ✦ ✦</div>
+
+  <p>早晨的光从窗帘缝隙里挤进来的时候，你已经醒了很久了。</p>
+
+  <p>你靠在床头看手机上的情报简讯，用余光注意着身边的人。他的意识在浅层睡眠中浮浮沉沉了一段时间，眉头偶尔皱一下，好像在梦里试图理清什么不对劲的逻辑链，但始终找不到答案。</p>
+
+  <p>八点零三分，他醒了。</p>
+
+  <p>是那种一瞬间就完全清醒的醒法。他的眼睛睁开，琥珀色的虹膜在晨光中显得格外清透。他盯着天花板看了两秒，然后迅速察觉到了不对。</p>
+
+  <p>你看到他的手在被子下面动了一下，大约是触碰到了自己身上某些异常的痕迹。也许是大腿内侧残留的黏腻感，也许是穴口处隐约的酸胀。他的表情在三秒之内发生了非常精彩的变化：困惑，排查，锁定，确认。</p>
+
+  <p>然后他转过头来看你。</p>
+
+  <p>那个眼神如果能杀人，你大概已经死了两次。</p>
+
+  <p>"你给我下药了。"</p>
+
+  <p>不是疑问句。</p>
+
+  <p>你放下手机，转头看他。他的银白长发因为一夜的辗转显得有些凌乱，几缕搭在肩上，衬得那张苍白的脸上怒意格外分明。他的眉眼在清醒状态下恢复了全部的锋利，嘴唇抿成一条直线，下颌绷紧。他在忍耐，你分辨得出来。尤金·怀尔德发脾气从来不会大吼大叫，他只会变得越来越安静，越来越冷，语速越来越慢，像手术刀一样精准地挑选词汇。</p>
+
+  <p>"牛奶里。"他说。不是询问，是陈述。</p>
+
+  <p>"对。"你没有否认。</p>
+
+  <p>他闭了一下眼睛。他的睫毛颤动着，你看到他的喉结上下滚动了一次，那是他在做吞咽动作，把涌上来的某种情绪咽回去。</p>
+
+  <p>他撑着床面坐起来，动作因为下身的不适而顿了一下。你看到他的耳尖红了，那是身体的诚实反应，和他此刻冰冷的表情形成了鲜明的对比。</p>
+
+  <p>他坐在床上，被子堆在腰间，解开的睡衣领口露出锁骨。他直视着你，眼底是你非常熟悉的那种情绪——不是单纯的愤怒，而是一种更复杂的东西。被入侵的羞耻，失去控制的恐慌，以及被最亲近的人算计了的、难以言说的委屈。</p>
+
+  <p>"尤金。"你叫他的名字。</p>
+
+  <p>"别叫我名字。"他立刻打断你。</p>
+
+  <p>他偏过头去，不看你。你注意到他的手指在被子上攥紧了又松开，反复了好几次，他在整理自己的情绪，你伸手揽住他的腰。</p>
+
+  <p>他的身体立刻僵硬了。</p>
+
+  <p>"放开。"</p>
+
+  <p>你没放开。你把他拉进怀里，手掌贴着他的后背。他试图推你，两只手抵着你的肩膀，但他刚睡醒，又经历了昨晚的事，手上没什么力气，推了两下没推动。</p>
+
+  <p>"你松不松手。"他的声音闷在你肩窝里，因为距离太近而失去了应有的杀伤力。</p>
+
+  <p>"不松。"</p>
+
+  <p>"……德弗兰。"</p>
+
+  <p>你收紧了手臂。他的额头抵着你的锁骨，你能感觉到他的呼吸喷在你胸口，温热的，频率偏快。他不再挣扎了，但也没有放松，整个人像一只被强行按住的猫，浑身的毛都竖着，却暂时找不到挣脱的办法。</p>
+
+  <p>"下次会提前说。"你说。</p>
+
+  <p>他沉默了很久。</p>
+
+  <p>"……你居然还打算有下次。"他的声音从你肩窝里传出来，闷闷的，带着咬牙切齿的意味。</p>
+
+  <p>你低头，嘴唇贴着他的发顶。银白色的头发丝滑而冰凉，冷杉的味道重新变得清淡了。</p>
+
+  <p>"下次。"你重复了一遍。</p>
+
+  <p>他又沉默了一会儿。然后你感觉到他抵在你肩膀上的手慢慢松开了，指尖从推拒变成了虚虚搭着。他的身体一点一点地放松，僵硬的脊背软下来，后背的肌肉不再绷紧。他的脸还是埋在你肩窝里，不肯抬起来。</p>
+
+  <p>"……提前说。"他终于闷声说了一句。</p>
+
+  <p>你"嗯"了一声。</p>
+
+  <p>"提前说就可以。"他又补充了一句，声音小到几乎听不清。</p>
+
+  <p>你没有追问。你只是把他抱紧了一些，手掌在他后背缓慢地摩挲。他窝在你怀里，呼吸逐渐平稳下来，温热的气息均匀地拂过你的锁骨。他的耳尖还是红的。</p>
+
+  <p>窗外的光线越来越亮了。厨房角落里那台老式面包机在定时器的驱动下响了一声，开始播放暖融融的旋律，提醒该吃早餐了。</p>
+
+  <p>尤金·怀尔德在你怀里闷闷地说了一句："……面包机响了。"</p>
+
+  <p>"听到了。"</p>
+
+  <p>"松开我。"</p>
+
+  <p>你松开了。他从你怀里抽身出来，没看你，低着头把睡衣的扣子一颗一颗系好。他的手指很稳，没有任何颤抖，好像刚才那几分钟的软弱从来没有存在过。系到最后一颗的时候他停了一下，抬起手背快速地擦了一下眼角，动作很快，像是不经意的习惯。</p>
+
+  <p>然后他转过头来看你，表情已经恢复了平时那种冷淡疏离的样子。</p>
+
+  <p>"帮我拿轮椅过来。"</p>
+
+  <p>语气是命令式的，和往常没有区别。但他的视线在接触到你的时候短暂地闪避了一下，然后才重新定住。</p>
+
+  <p>你下床，把轮椅推到床边。他撑着床沿和扶手完成了转移，动作利落。银白的长发在转身时扫过肩膀，他伸手拢到耳后，露出侧颈一小片干净苍白的皮肤。</p>
+
+  <p>他操控轮椅朝门口驶去，背影笔直。经过你身边的时候，他的手不知道是有意还是无意地从你手背上蹭过去了一下，指尖微凉。</p>
+
+  <p>你听见他说："咖啡豆快用完了，今天记得买。"</p>
+
+  <p>然后金属轮椅的声音沿着走廊渐渐远去，面包机的旋律在厨房里轻轻回荡。</p>
+
+  <div class="end">——END——</div>
+<!-- ==================== 上一章 / 下一章 ==================== -->
+  <div class="chapter-nav">
+    <a href="#" class="chapter-btn" id="prevBtn">← 上一章</a>
+    <a href="#" class="chapter-btn" id="nextBtn">下一章 →</a>
+  </div>
+
+  <!-- ==================== 返回主页 ==================== -->
+  <a href="index.html" class="back-btn">⬅ 返回主页</a>
+
+  <!-- ==================== 悬浮按钮 ==================== -->
+  <div class="float-btns" id="floatBtns">
+    <button class="float-btn" id="btnTop" title="回到顶部">↑</button>
+    <a href="index.html" class="float-btn" title="返回目录">📖</a>
+  </div>
+
+  <!-- ==================== 脚本 ==================== -->
+  <script src="data.js"></script>
+  <script>
+    (function() {
+      // ===== 记住阅读位置 =====
+      var key = 'jellyfish_scroll_' + location.pathname;
+      var saved = localStorage.getItem(key);
+      if (saved) {
+        window.addEventListener('load', function() {
+          window.scrollTo(0, parseInt(saved, 10));
+        });
+      }
+      var timer = null;
+      window.addEventListener('scroll', function() {
+        if (timer) return;
+        timer = setTimeout(function() {
+          localStorage.setItem(key, window.scrollY);
+          timer = null;
+        }, 300);
+      });
+
+      // ===== 悬浮按钮显示/隐藏 =====
+      var floatBtns = document.getElementById('floatBtns');
+      var btnTop = document.getElementById('btnTop');
+
+      window.addEventListener('scroll', function() {
+        if (window.scrollY > 200) {
+          floatBtns.classList.add('show');
+        } else {
+          floatBtns.classList.remove('show');
+        }
+      });
+
+      btnTop.addEventListener('click', function() {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      });
+
+                  // ===== 上一章 / 下一章（自动识别） =====
+      var currentFile = decodeURIComponent(location.pathname.split('/').pop());
+      var currentRole = null;
+      var currentIndex = -1;
+
+      if (typeof articlesData !== 'undefined') {
+        Object.keys(articlesData).forEach(function(roleKey) {
+          var role = articlesData[roleKey];
+          role.list.forEach(function(article, idx) {
+            if (article.href === currentFile) {
+              currentRole = roleKey;
+              currentIndex = idx;
+            }
+          });
+        });
+      }
+
+      if (currentRole !== null && currentIndex >= 0) {
+        var roleData = articlesData[currentRole];
+        var prevBtn = document.getElementById('prevBtn');
+        var nextBtn = document.getElementById('nextBtn');
+
+        if (currentIndex > 0) {
+          prevBtn.href = roleData.list[currentIndex - 1].href;
+        } else {
+          prevBtn.classList.add('disabled');
+          prevBtn.href = 'javascript:void(0)';
+        }
+
+        if (currentIndex < roleData.list.length - 1) {
+          nextBtn.href = roleData.list[currentIndex + 1].href;
+        } else {
+          nextBtn.classList.add('disabled');
+          nextBtn.href = 'javascript:void(0)';
+        }
+      }
+
+      // ===== 8. 字数 / 阅读时长 =====
+      var statsEl = document.getElementById('readingStats');
+      if (statsEl) {
+        var bodyEl = document.querySelector('body');
+        var clone = bodyEl.cloneNode(true);
+        // 去掉脚本、样式、按钮等
+        clone.querySelectorAll('script, style, button, a, .theme-toggle, .float-btns, .chapter-nav, .back-btn, .progress-bar, .reading-stats').forEach(function(el) { el.remove(); });
+        var text = clone.innerText || '';
+        var cleanText = text.replace(/\s+/g, '');
+        var charCount = cleanText.length;
+        var minutes = Math.max(1, Math.round(charCount / 400));
+        statsEl.textContent = '约 ' + charCount + ' 字 · 阅读约 ' + minutes + ' 分钟';
+      }
+
+      // ===== 9. 阅读进度条 =====
+      var progressBar = document.getElementById('progressBar');
+      function updateProgress() {
+        var scrollTop = window.scrollY;
+        var docHeight = document.documentElement.scrollHeight - window.innerHeight;
+        var percent = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+        progressBar.style.width = Math.min(100, Math.max(0, percent)) + '%';
+      }
+      window.addEventListener('scroll', updateProgress);
+      window.addEventListener('resize', updateProgress);
+      updateProgress();
+    })();
+  </script>
+
+  <!-- ==================== 主题切换脚本 ==================== -->
+  <script>
+    (function() {
+      const btn = document.getElementById('themeToggle');
+      const icon = document.getElementById('themeIcon');
+      const text = document.getElementById('themeText');
+      const body = document.body;
+      let isDark = false;
+
+      function applyTheme(dark) {
+        body.classList.toggle('dark', dark);
+        icon.textContent = dark ? '☀️' : '🌙';
+        text.textContent = dark ? '浅色模式' : '深色模式';
+        localStorage.setItem('novel-theme', dark ? 'dark' : 'light');
+      }
+
+      const saved = localStorage.getItem('novel-theme');
+      if (saved === 'dark') { isDark = true; }
+      else if (saved === 'light') { isDark = false; }
+      else { isDark = window.matchMedia('(prefers-color-scheme: dark)').matches; }
+      applyTheme(isDark);
+
+      btn.addEventListener('click', () => {
+        isDark = !isDark;
+        applyTheme(isDark);
+      });
+    })();
+  </script>
+
+</body>
+</html>

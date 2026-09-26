@@ -1,0 +1,968 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>文章标题</title>
+  <style>
+    /* ---------- 主题变量 ---------- */
+    :root {
+      --bg-body: #fefefe;
+      --bg-note: #f9f9f9;
+      --border-light: #eee;
+      --border-medium: #ddd;
+      --text-primary: #333;
+      --text-secondary: #666;
+      --text-muted: #888;
+      --text-title: #222;
+      --text-section: #444;
+      --accent-line: #aaa;
+      --toggle-bg: #ffffff;
+      --toggle-border: #ccc;
+      --toggle-text: #333;
+    }
+    body.dark {
+      --bg-body: #1a1e24;
+      --bg-note: #252a31;
+      --border-light: #2e353e;
+      --border-medium: #3a424d;
+      --text-primary: #e0e0e0;
+      --text-secondary: #b0b8c0;
+      --text-muted: #8a939e;
+      --text-title: #f0f0f0;
+      --text-section: #d0d8e0;
+      --accent-line: #5a6570;
+      --toggle-bg: #2a313a;
+      --toggle-border: #4a5560;
+      --toggle-text: #e8e8e8;
+    }
+
+    /* ---------- 基础样式 ---------- */
+    body {
+      font-family: 'Georgia', 'Songti SC', serif;
+      line-height: 1.8;
+      color: var(--text-primary);
+      max-width: 800px;
+      margin: 40px auto;
+      padding: 20px;
+      background-color: var(--bg-body);
+      border-left: 1px solid var(--border-light);
+      border-right: 1px solid var(--border-light);
+      transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+    }
+
+    p {
+      margin-bottom: 1.2em;
+      text-indent: 2em;
+    }
+    .no-indent { text-indent: 0; }
+
+    .scene-break {
+      text-align: center;
+      margin: 2em 0;
+      color: var(--accent-line);
+      font-size: 0.9em;
+    }
+
+    .title {
+      text-align: center;
+      font-size: 1.8em;
+      margin-bottom: 1em;
+      color: var(--text-title);
+      border-bottom: 1px solid var(--border-medium);
+      padding-bottom: 0.5em;
+    }
+
+    .meta {
+      text-align: center;
+      font-size: 0.9em;
+      color: var(--text-secondary);
+      margin-bottom: 2em;
+      font-style: italic;
+      line-height: 1.6;
+    }
+
+    .end {
+      text-align: center;
+      margin-top: 3em;
+      padding-top: 1em;
+      border-top: 1px solid var(--border-medium);
+      font-weight: bold;
+      color: var(--text-secondary);
+    }
+
+    .section-title {
+      font-weight: bold;
+      color: var(--text-section);
+      margin: 1.5em 0 0.5em;
+      text-align: center;
+      font-size: 1.2em;
+    }
+
+    .dialogue {
+      margin-left: 2em;
+      font-style: italic;
+    }
+
+    .action {
+      color: var(--text-secondary);
+      font-style: italic;
+    }
+
+    .author-note {
+      font-size: 0.85em;
+      color: var(--text-muted);
+      margin-top: 2em;
+      padding: 1em;
+      background-color: var(--bg-note);
+      border-left: 3px solid var(--border-medium);
+      font-family: 'Arial', sans-serif;
+    }
+
+    /* ---------- 主题切换按钮 ---------- */
+    .theme-toggle {
+      position: fixed;
+      top: 24px;
+      right: 24px;
+      background-color: var(--toggle-bg);
+      color: var(--toggle-text);
+      border: 1px solid var(--toggle-border);
+      border-radius: 40px;
+      padding: 10px 18px;
+      font-size: 0.9rem;
+      font-family: Arial, sans-serif;
+      cursor: pointer;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+      transition: all 0.3s ease;
+      z-index: 9999;
+    }
+    .theme-toggle:hover { transform: scale(1.03); }
+    @media (max-width: 600px) {
+      body { margin: 20px auto; padding: 16px; }
+      .theme-toggle { top: 12px; right: 12px; padding: 8px 14px; font-size: 0.8rem; }
+      .title { font-size: 1.5em; }
+    }
+
+    /* ---------- 返回主页板块 ---------- */
+    .back-btn {
+      display: block;
+      text-align: center;
+      max-width: 400px;
+      margin: 2.5em auto 1em;
+      padding: 1em 1.5em;
+      background-color: var(--bg-note);
+      border: 1px solid var(--border-light);
+      border-radius: 8px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-family: 'Arial', sans-serif;
+      font-size: 0.95em;
+      transition: all 0.3s ease;
+    }
+    .back-btn:hover {
+      color: var(--text-primary);
+      background-color: var(--border-light);
+      transform: translateY(-1px);
+    }
+
+    /* ---------- 悬浮按钮 ---------- */
+    .float-btns {
+      position: fixed;
+      right: 20px;
+      bottom: 30px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      z-index: 999;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s;
+    }
+    .float-btns.show {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    .float-btn {
+      width: 46px;
+      height: 46px;
+      border-radius: 50%;
+      background: #282838;
+      border: 1px solid #3b3b4e;
+      color: #d6d0ec;
+      font-size: 1.2rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+      transition: 0.2s;
+    }
+    .float-btn:hover {
+      background: #3a3a52;
+      transform: scale(1.08);
+      color: #b8a6ff;
+    }
+
+    /* ---------- 上一章 / 下一章 ---------- */
+    .chapter-nav {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      margin-top: 30px;
+      padding-top: 20px;
+      border-top: 1px solid var(--border-medium);
+    }
+    .chapter-btn {
+      flex: 1;
+      text-align: center;
+      padding: 12px 16px;
+      border-radius: 20px;
+      background-color: var(--bg-note);
+      border: 1px solid var(--border-light);
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-size: 0.9rem;
+      transition: 0.2s;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .chapter-btn:hover {
+      background-color: var(--border-light);
+      color: var(--text-primary);
+    }
+    .chapter-btn.disabled {
+      opacity: 0.25;
+      pointer-events: none;
+      cursor: default;
+    }
+    @media (max-width:480px) {
+      .chapter-btn { font-size: 0.8rem; padding: 10px 10px; }
+    }
+
+    /* ==================== 8. 字数 / 阅读时长 ==================== */
+    .reading-stats {
+      text-align: center;
+      font-size: 0.85em;
+      color: var(--text-muted);
+      margin: -1em 0 2em;
+      font-family: 'Arial', sans-serif;
+      letter-spacing: 0.5px;
+    }
+
+    /* ==================== 9. 阅读进度条 ==================== */
+    .progress-bar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 0%;
+      height: 3px;
+      background: linear-gradient(90deg, #8f7fd6, #b8a6ff);
+      z-index: 99999;
+      transition: width 0.1s linear;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 阅读进度条 -->
+  <div class="progress-bar" id="progressBar"></div>
+
+  <!-- 主题切换按钮 -->
+  <button class="theme-toggle" id="themeToggle" aria-label="切换深浅色模式">
+    <span id="themeIcon">🌙</span>
+    <span id="themeText">深色模式</span>
+  </button>
+
+
+  <!-- ==================== 文章正文 ==================== -->
+  <h1 class="title">[你×东南西北]中秋假期</h1>
+  <div class="meta">
+    by水母<br>
+    很神秘的擦边软色情（？）对比之前的比较隐晦吧，算是一天的收尾
+  </div>
+
+  <!-- 字数统计（自动生成） -->
+  <div class="reading-stats" id="readingStats"></div>
+
+  <div class="author-note">
+    <p><strong>排雷：</strong>包月饼，厨房play，软色情，对话较多</p>
+    <p><strong>summer：</strong>要和东南西北一起做月饼吗？</p>
+  </div>
+
+  <div class="scene-break">✦ ✦ ✦</div>
+
+  <p>衔封街的中秋，比往年来得早了些。</p>
+
+  <p>准确地说，是云珩的准备来得早了些。你前天收到他派人送来的请柬，不是那种正经八百的红色烫金款，而是一张淡青色的素笺，上面只写了一行字：中秋做月饼，来否？</p>
+
+  <p>落款是云珩那笔一贯端正的行楷，笔锋里带着点克制的期待。</p>
+
+  <p>你把请柬收进袖中，什么都没回，可到了中秋这天，你还是准时出现在了云珩的宅子门口。门依旧虚掩着，院子里飘出桂花和糖的混合香气。你推门进去，穿过前院，直接往后院的厨房走。</p>
+
+  <p>厨房在偏院，是个单独的小跨院，平时云珩研究那些菜谱都在这里。你走到门口的时候，看见他正在里面忙活。一身月白色的衣袍，袖子挽到了手肘处，露出一截白皙的小臂。他没戴手套，十指修长，此刻正在案板上揉面团，动作认真而专注。</p>
+
+  <p>听到脚步声，云珩抬起头来。</p>
+
+  <p>看到是你，他的眼睛亮了一瞬，嘴角的弧度柔和下来。</p>
+
+  <p>"来了。"他说，语气平淡，像你只是出门买了个烧饼回来。</p>
+
+  <p>可你注意到他揉面团的手指微微顿了一下，力度大到面团被按出了一个深深的凹陷。他很快恢复了节奏，把面团重新揉圆，拍了拍手上的面粉。</p>
+
+  <p>"正好，过来帮忙。"</p>
+
+  <p>你走进厨房，目光扫过案台。上面摆了好几样东西，莲蓉、豆沙、蛋黄，还有一碗看起来是他自己调制的馅料，颜色偏深，闻起来有桂花和坚果的香气。</p>
+
+  <p>"这是什么馅？"你问。</p>
+
+  <p>"桂花核桃，"云珩说，把揉好的面团分成小剂子，"你上次说吃过一回，觉得不够甜，我调整了糖的比例。"</p>
+
+  <p>你看了他一眼。</p>
+
+  <p>上次你提这个事情，是在半年前的某个深夜，两个人做完之后躺在床上闲聊。你随口说了一句"以前吃过桂花核桃馅的月饼，可惜太甜了"，当时云珩只是嗯了一声，你以为他根本没往心里去。</p>
+
+  <p>结果他不仅记住了，还专门研究了配方。</p>
+
+  <p>"试试看合不合你的口味。"他把一小块馅料递到你嘴边。</p>
+
+  <p>你张嘴咬了一口。桂花的清香在口腔里散开，核桃的颗粒感恰到好处，甜度确实刚好，不腻，还有一丝若有若无的回甘。</p>
+
+  <p>"嗯，可以。"</p>
+
+  <p>云珩听到你的评价，眉眼间的柔和更深了几分。他把剩下的馅料收好，拍了拍手，指了指旁边的围裙。</p>
+
+  <p>"穿上，别弄脏了衣服。"</p>
+
+  <p>你挑了挑眉，没动。</p>
+
+  <p>云珩看了你一眼，叹了口气，拿起围裙走过来。他站在你面前，把围裙展开，绕到你身后，动作娴熟地给你系上。他的指尖在你腰后打结的时候，轻轻摩挲了一下你的腰侧，力道很轻，像是无意的触碰，可那点温度还是透过衣料传了过来。</p>
+
+  <p>"好了。"他说，退开一步，目光在你身上扫了一圈，"很合适。"</p>
+
+  <p>你低头看了看身上的围裙，是素色的，没什么花纹，料子摸起来很舒服。</p>
+
+  <p>"你自己的呢？"</p>
+
+  <p>"我不用。"</p>
+
+  <p>"穿上。"你说。</p>
+
+  <p>云珩愣了一下，大概没想到你会这么直接地要求。可他没有拒绝，顺从地拿起另一条围裙，自己系上了。他的动作很慢，打结的时候手指顿了顿，像是在适应什么。</p>
+
+  <p>你看着他系围裙的动作，忽然觉得有点好笑。这个人在外面呼风唤雨，黑白两道都要给面子，可在你面前，连穿不穿围裙这种小事都要听你的。</p>
+
+  <p>"过来，教你包月饼。"云珩把面团和馅料摆好，拿起一个小剂子开始示范，"先把面团压扁，中间厚一点，边缘薄一点。然后把馅料包进去，收口要捏紧，不然烤的时候会裂。"</p>
+
+  <p>他的动作很熟练，几下就把一个月饼坯子包好了，表面光滑圆润，看起来就很标准。</p>
+
+  <p>"你试试。"他把面团递给你。</p>
+
+  <p>你接过面团，学着他的样子压扁，可力道没掌握好，中间压得太薄了，边缘反而太厚。你皱了皱眉,重新调整，把面团揉圆再来一次。</p>
+
+  <p>云珩站在你旁边，看着你的动作，没有催促，只是安静地等着。等你把面团压得差不多了，他才开口：</p>
+
+  <p>"馅料不要放太多，不然包不住。"</p>
+
+  <p>你舀了一勺馅料放在面皮上，开始收口。可收口这个动作比想象中难，面皮太薄的地方一捏就破了，你只好重新调整位置，小心翼翼地把面皮往中间拢。</p>
+
+  <p>云珩看了一会儿，忽然伸手覆上了你的手。</p>
+
+  <p>"这样，"他的手指握着你的，带着你的动作慢慢收口，"要顺着一个方向，慢慢转。"</p>
+
+  <p>他的声音在你耳边响起，带着一种特有的温和。他的胸膛贴着你的背，呼吸喷洒在你的颈侧，温热而绵长。你能感觉到他身上乌木的气息包裹着你，还有他指尖传来的温度。</p>
+
+  <p>"学会了吗？"他问，声音低了几度。</p>
+
+  <p>你没有回答，而是忽然转过身。</p>
+
+  <p>云珩的动作顿住了，手还保持着刚才的姿势，悬在半空中。他看着你，眼神里闪过一丝疑惑，还有一丝隐隐约约的期待。</p>
+
+  <p>"继续教。"你说。</p>
+
+  <p>他的喉结滚动了一下，然后重新贴近你，手再次覆上你的手。这次他离得更近了，几乎是把你整个人圈在怀里。你能感觉到他胸膛的起伏，还有他指尖微微收紧的力道。</p>
+
+  <p>"先这样，"他带着你的手把月饼坯子翻了个面，"然后用虎口慢慢往上推。"</p>
+
+  <p>你顺着他的动作做了一遍，这次收口顺利多了。月饼坯子圆圆的，捏在手里沉甸甸的。</p>
+
+  <p>"不错。"云珩松开手，退开一步。</p>
+
+  <p>你注意到他的耳尖红了。</p>
+
+  <p>不是那种明显的红，而是淡淡的粉色，在白皙的皮肤上若隐若现。他垂着眼睛，睫毛在眼睑上投下一小片阴影，指尖无意识地在围裙上摩挲着。</p>
+
+  <p>你把月饼坯子放到一边，拍了拍手上的面粉。</p>
+
+  <p>"接下来呢？"</p>
+
+  <p>"压模子，"云珩说，拿起一个木制的月饼模具，"把坯子放进去，压一下，脱模就行了。"</p>
+
+  <p>他示范了一遍，动作干脆利落。脱模的时候，一个花纹精致的月饼就出现在案板上，表面印着繁复的花纹，看起来就很有节日的氛围。</p>
+
+  <p>你也拿起一个模具，把刚才包好的月饼坯子放进去，用力一压。脱模的时候，月饼表面的花纹不太清晰，有几处糊了。</p>
+
+  <p>"力道要均匀，"云珩说，"不能只压中间，边缘也要照顾到。"</p>
+
+  <p>你又试了一次，这次好多了。</p>
+
+  <p>接下来的时间，你们就这么一个包、一个压，配合得还算默契。厨房里很安静，只有案板上的轻微响动，还有偶尔传来的鸟鸣声。窗外的阳光透过窗棂洒进来，在地上投下一片暖洋洋的光斑。</p>
+
+  <p>云珩的手上沾了面粉，白白的一层，在他修长的手指上显得格外明显。他把做好的月饼一个个摆到烤盘上，动作很轻，像是在对待什么易碎的宝贝。</p>
+
+  <p>你忽然走到他身后，从背后环住了他的腰。</p>
+
+  <p>云珩的身体僵了一瞬，手里的月饼差点掉到地上。他稳住身形，低声说："别闹，月饼还没做完。"</p>
+
+  <p>"我知道。"你说，下巴搭在他的肩膀上，"可是我想抱你。"</p>
+
+  <p>他的呼吸乱了一拍。</p>
+
+  <p>"这里是厨房。"</p>
+
+  <p>"我知道。"</p>
+
+  <p>"会被人看见。"</p>
+
+  <p>"门关着，看不见。"</p>
+
+  <p>云珩沉默了几秒，然后轻轻叹了口气。他没有挣扎，而是放下手里的月饼，转过身来面对你。</p>
+
+  <p>"你今天怎么了？"他问，眼神里带着一丝无奈，还有藏不住的纵容。</p>
+
+  <p>"没怎么，"你说，"就是想抱你。"</p>
+
+  <p>他看着你的眼睛，像是在确认什么。然后他抬起手，手指上还沾着面粉，在你的脸颊上轻轻蹭了一下。</p>
+
+  <p>"脸上有面粉。"他说。</p>
+
+  <p>"你弄上去的。"</p>
+
+  <p>"我故意的。"他说完这句话，自己先笑了，"不然怎么摸你的脸？"</p>
+
+  <p>你盯着他看了两秒，然后伸手握住了他的手腕。</p>
+
+  <p>他的笑容顿住了。</p>
+
+  <p>"西西莉亚？"</p>
+
+  <p>你没有回答，而是把他的手拉到唇边，舌尖扫过他的指尖。面粉的味道混着他皮肤的温度，在口腔里化开。你看着他的眼睛，慢慢地把他的手指含进嘴里。</p>
+
+  <p>云珩的瞳孔骤然收缩。</p>
+
+  <p>"别，"他的声音低了下来，带着一丝紧绷，"月饼还没烤。"</p>
+
+  <p>"烤完再说。"你松开他的手指，推着他往后退了几步，直到他的后背抵上了灶台的边缘。</p>
+
+  <p>他没有反抗，只是看着你，眼神里的温和渐渐被其他的什么取代了。那是一种很复杂的情绪，有顺从，有期待，还有一丝隐隐的不安。</p>
+
+  <p>"这里不合适。"他说，可声音里已经没什么说服力了。</p>
+
+  <p>"哪里合适？"</p>
+
+  <p>"至少，"他咽了咽喉咙，"至少等月饼烤完。"</p>
+
+  <p>你看着他微微泛红的脸，还有他不自觉收紧的指尖。他的整个人都紧绷着，像一根拉满了的弦，随时会断。</p>
+
+  <p>可你知道他不会断。</p>
+
+  <p>因为他舍不得。</p>
+
+  <p>"烤月饼要多久？"你问。</p>
+
+  <p>"二十分钟。"</p>
+
+  <p>"够了。"</p>
+
+  <p>云珩的呼吸急促了几分，喉结上下滚动。他张了张嘴，像是想说什么，可最后只是低低地叹了口气。</p>
+
+  <p>"你总是这样。"他说。</p>
+
+  <p>"哪样？"</p>
+
+  <p>"想做什么就做什么，"他的声音很低，低到几乎听不清，"连我都拦不住。"</p>
+
+  <p>"那你想拦我吗？"</p>
+
+  <p>他看着你的眼睛，沉默了很久。</p>
+
+  <p>"不想。"</p>
+
+  <p>你笑了，俯身吻住了他的唇。</p>
+
+  <p>他的唇很软，带着一点点面粉的味道。你舔过他的唇线,撬开他的牙关，舌尖探进去，扫过他的上颚。他发出一声压抑的低吟，手指抓住了你的衣袖，力道大到布料都皱了。</p>
+
+  <p>你一手撑在他身后的灶台上，另一手探进他的衣襟，指尖划过他胸口的皮肤。他的身体微微颤了一下，呼吸变得更加急促。</p>
+
+  <p>"西西莉亚，"他在唇齿间含糊地叫你的名字，"等，等一下。"</p>
+
+  <p>"等什么？"</p>
+
+  <p>"月饼，"他的声音断断续续的，"要放进烤炉。"</p>
+
+  <p>你松开他，退开一步。</p>
+
+  <p>云珩靠在灶台边上，胸口剧烈起伏着，脸上泛着不正常的红晕。他的衣襟敞开了一半，露出胸口一片白皙的皮肤，上面还残留着你刚才留下的红痕。</p>
+
+  <p>他低着头，睫毛微微颤抖，用了好几秒才稳住呼吸。然后他理了理衣襟，走到案板边，把做好的月饼一个个放进烤盘里。</p>
+
+  <p>他的动作很慢，手指微微发颤，有一个月饼差点从他手里滑下去。他稳住手，深吸一口气，把烤盘放进了烤炉里。</p>
+
+  <p>"二十分钟。"他说，背对着你。</p>
+
+  <p>"我知道。"</p>
+
+  <p>"你能不能，"他顿了顿，"等二十分钟？"</p>
+
+  <p>你走到他身后，从背后环住他的腰，下巴搭在他的肩膀上。</p>
+
+  <p>"不能。"</p>
+
+  <p>他的身体又紧绷起来。</p>
+
+  <p>"这里真的不合适，"他说，声音里带着一丝恳求，"回房间好不好？"</p>
+
+  <p>"就在这里。"你说，手指解开了他腰间的结，围裙滑落在地上。</p>
+
+  <p>云珩闭了闭眼睛，喉结剧烈滚动。</p>
+
+  <p>"你真的，"他的声音沙哑得厉害，"一点都不听话。"</p>
+
+  <p>"嗯，"你吻了吻他的耳垂，"我从来不听话，你又不是不知道。"</p>
+
+  <p>"我知道，"他说，声音里带着无奈和纵容，"我太知道了。"</p>
+
+  <p>你的手探进他的衣襟，指尖划过他的腰线。他的皮肤很烫，像是被火烤过一样。你能感觉到他肌肉的紧绷，还有他拼命压抑的颤抖。</p>
+
+  <p>"放松。"你在他耳边低语。</p>
+
+  <p>"放松不了，"他说，"你在摸我，我怎么放松？"</p>
+
+  <p>你笑了，手指往下探。</p>
+
+  <p>云珩倒吸一口气，整个人都往后靠在你身上。他的手抓住了旁边的案板边缘，指节泛白。</p>
+
+  <p>"别，"他的声音带着哭腔，"真的会被人听见。"</p>
+
+  <p>"那你就小声点。"</p>
+
+  <p>"我，"他咬住下唇，"我做不到。"</p>
+
+  <p>你的手指握住了他，慢慢地动作。他的身体立刻绷得更紧了,头往后仰，喉咙里发出压抑的呻吟。</p>
+
+  <p>"西西莉亚，"他喘着气叫你的名字，"求你，慢一点。"</p>
+
+  <p>"已经很慢了。"</p>
+
+  <p>"不，"他的声音颤抖得厉害，"太快了，我受不了。"</p>
+
+  <p>你在他耳边轻笑，手上的动作却没有停。他的呼吸越来越急促，整个人都在你怀里轻微颤抖。你能感觉到他在拼命忍耐，咬着下唇不让自己发出太大的声音。</p>
+
+  <p>"别忍，"你说，"想叫就叫。"</p>
+
+  <p>"不行，"他摇了摇头，"会被人听见。"</p>
+
+  <p>"那你就忍着。"</p>
+
+  <p>云珩发出一声压抑的呜咽，手指在案板上抓出了轻微的划痕。他的身体抖得越来越厉害，呼吸乱成一团。</p>
+
+  <p>"我快，"他断断续续地说，"我快不行了。"</p>
+
+  <p>"嗯，我知道。"</p>
+
+  <p>"求你，"他的声音带着哭腔，"让我，让我去一下。"</p>
+
+  <p>"去哪儿？"</p>
+
+  <p>"回房间，"他喘着气，"求你了，这里真的不行。"</p>
+
+  <p>你停下手上的动作。</p>
+
+  <p>云珩的身体颤了一下，发出一声失望的低吟。他扭过头看你，眼睛里雾蒙蒙的，睫毛上挂着细小的水珠。</p>
+
+  <p>"怎么停了？"他问，声音沙哑。</p>
+
+  <p>"不是说这里不行吗？"</p>
+
+  <p>"我，"他咬了咬唇，"我错了。"</p>
+
+  <p>"错哪儿了？"</p>
+
+  <p>"不该，"他的脸红得厉害，"不该说不行。"</p>
+
+  <p>"那现在行不行？"</p>
+
+  <p>"行，"他低着头，声音小得像蚊子，"都行。"</p>
+
+  <p>你满意地笑了，手重新握住了他。</p>
+
+  <p>云珩立刻发出一声轻微的呻吟，身体软了下来，整个人都靠在你身上。他的手无力地搭在案板上，指尖微微蜷缩，像是在抓什么东西。</p>
+
+  <p>"舒服吗？"你问。</p>
+
+  <p>"嗯，"他点了点头，"舒服。"</p>
+
+  <p>"想要更舒服吗？"</p>
+
+  <p>他又点了点头，然后像是意识到什么，又飞快地摇了摇头。</p>
+
+  <p>"不，"他说，"这样就好。"</p>
+
+  <p>"真的？"</p>
+
+  <p>"真的，"他的声音带着一丝恳求，"求你了，别再折腾我了。"</p>
+
+  <p>你看着他泛红的耳尖，还有他微微颤抖的身体，忽然觉得这个人真的太可爱了。</p>
+
+  <p>明明是衔封街的老大，黑白两道都怕他，可在你面前，连一句硬气话都说不出来。</p>
+
+  <p>"转过来。"你说。</p>
+
+  <p>云珩顺从地转过身，背靠着案板看着你。他的衣襟大开，露出胸口大片的皮肤，上面布满了你留下的痕迹。他的脸红得厉害，眼神迷离，嘴唇微微张开，呼吸急促。</p>
+
+  <p>你俯身吻住他，手探到他身后，解开了他的腰带。</p>
+
+  <p>云珩的身体又紧绷起来，在唇齿间发出模糊的抗议。可他没有真的推开你，只是手指抓住了你的衣袖，像是在寻找支撑。</p>
+
+  <p>"放松，"你在他唇边低语，"我会温柔的。"</p>
+
+  <p>"你从来不温柔，"他说，声音里带着一丝控诉。</p>
+
+  <p>"那你想要我温柔吗？"</p>
+
+  <p>他沉默了几秒。</p>
+
+  <p>"不想，"他低声说，"你温柔的话，就不像你了。"</p>
+
+  <p>你笑了，吻了吻他的额角。</p>
+
+  <p>"真乖。"</p>
+
+  <p>云珩别过头，耳尖红得快滴血了。</p>
+
+  <p>你的手探进他的衣袍，指尖划过他的脊背。他的皮肤很烫，微微渗着薄汗。你能感觉到他肌肉的紧绷,还有他拼命压抑的颤抖。</p>
+
+  <p>"西西莉亚，"他忽然叫你。</p>
+
+  <p>"嗯？"</p>
+
+  <p>"我，"他顿了顿，声音很低，"我听你的。"</p>
+
+  <p>"听我什么？"</p>
+
+  <p>"你想怎样都行，"他抬起头看着你，眼神里带着一种臣服的温柔，"我都听你的。"</p>
+
+  <p>你看着他的眼睛，忽然觉得心里某个地方被什么东西轻轻触碰了一下。</p>
+
+  <p>这个人，把所有的骄傲都收起来，把所有的防备都卸下来，像一只温顺的动物，把最脆弱的部分暴露在你面前。</p>
+
+  <p>他不是不会反抗，他只是不想反抗你。</p>
+
+  <p>"转过去。"你说。</p>
+
+  <p>云珩顺从地转过身，双手撑在案板上。他的背脊绷得笔直，肩膀微微颤抖。</p>
+
+  <p>你贴上他的后背，手探到前面握住了他。他立刻发出一声压抑的呻吟，整个人都软了下来。</p>
+
+  <p>"受不了就说。"你在他耳边低语。</p>
+
+  <p>"说了你也不会停。"他喘着气说。</p>
+
+  <p>"那你还是别说了。"</p>
+
+  <p>云珩发出一声无奈的轻笑，然后那笑声就化成了破碎的呻吟。</p>
+
+  <p>你的手有节奏地动作着，另一只手探到他身后。他的身体紧绷到了极点，喉咙里发出细碎的呜咽。</p>
+
+  <p>"放松，"你说，"别绷着。"</p>
+
+  <p>"做不到，"他的声音带着哭腔，"真的做不到。"</p>
+
+  <p>"那就别做。"</p>
+
+  <p>他没有回答，只是把头埋在臂弯里，肩膀剧烈起伏着。</p>
+
+  <p>你慢慢地探入，能感觉到他身体的每一次颤抖。他咬着手臂不让自己发出太大的声音，可那些压抑的呻吟还是从喉咙里泄露出来。</p>
+
+  <p>"疼吗？"你问。</p>
+
+  <p>"不疼，"他摇了摇头，"就是，太满了。"</p>
+
+  <p>"想要我停吗？"</p>
+
+  <p>"不想，"他的声音很坚定，"别停。"</p>
+
+  <p>你笑了，吻了吻他的后颈。</p>
+
+  <p>接下来的时间，厨房里只剩下彼此的呼吸声，还有身体碰撞时发出的轻微声响。云珩的呻吟越来越压抑不住，他把脸埋在臂弯里，肩膀剧烈颤抖。</p>
+
+  <p>"西西莉亚，"他忽然叫你，声音带着哭腔，"我快不行了。"</p>
+
+  <p>"嗯，"你说，"去吧。"</p>
+
+  <p>"可是，"他喘着气，"可是月饼还在烤。"</p>
+
+  <p>"我知道。"</p>
+
+  <p>"万一烤糊了怎么办？"</p>
+
+  <p>"那就重新做。"</p>
+
+  <p>"可是，"他的声音断断续续的，"可是你会不高兴。"</p>
+
+  <p>你愣了一下，然后笑了。</p>
+
+  <p>这个人，都这个时候了，还在担心你会不会不高兴。</p>
+
+  <p>"我不会不高兴，"你说，"做什么我都高兴。"</p>
+
+  <p>云珩的身体剧烈颤抖了一下，然后他整个人都软了下来，瘫在案板上。你能感觉到他的释放,还有他剧烈起伏的胸膛。</p>
+
+  <p>你慢慢地抽离，云珩发出一声难耐的呜咽。他的腿有些发软,整个人都靠在案板上站不稳。</p>
+
+  <p>你扶住他的腰，把他转过来。</p>
+
+  <p>他的脸上一片潮红，眼角挂着泪珠，嘴唇被咬得红肿。他看着你,眼神迷离而温顺，像一只被驯服的动物。</p>
+
+  <p>"舒服吗？"你问。</p>
+
+  <p>"嗯，"他点了点头，声音沙哑，"很舒服。"</p>
+
+  <p>"还要吗？"</p>
+
+  <p>他摇了摇头，又点了点头。</p>
+
+  <p>"我听你的。"他说。</p>
+
+  <p>你笑了，吻了吻他的唇角。</p>
+
+  <p>"今天就到这里。"</p>
+
+  <p>云珩松了口气，又有点失望。他靠在案板上，慢慢地调整呼吸，整理衣襟。他的手指微微发颤，系了好几次才把腰带系好。</p>
+
+  <p>"月饼，"他忽然想起来，"月饼应该好了。"</p>
+
+  <p>你看了看烤炉，里面传来诱人的香气。云珩走过去,打开烤炉，一股热气扑面而来。他拿出烤盘，上面的月饼烤得金黄，表面的花纹清晰，看起来很成功。</p>
+
+  <p>"没烤糊，"他说，语气里带着一丝庆幸。</p>
+
+  <p>"嗯，没糊。"</p>
+
+  <p>云珩把月饼放到一边晾着，转过身看你。</p>
+
+  <p>"还要继续做吗？"他问。</p>
+
+  <p>"做什么？"</p>
+
+  <p>"月饼，"他说，"还有一半的馅料没用完。"</p>
+
+  <p>你看了看案板上剩余的材料，又看了看他。</p>
+
+  <p>他站在那里，衣襟整齐，神态从容，如果不是脸上还残留着潮红，还有嘴唇的红肿，你几乎会以为刚才什么都没发生过。</p>
+
+  <p>"继续做。"你说。</p>
+
+  <p>云珩点了点头，重新系上围裙。他的动作比刚才慢了一些，腰有点不太舒服的样子，可他什么都没说，只是安静地开始包月饼。</p>
+
+  <p>你们又做了一炉月饼。</p>
+
+  <p>这次配合得更默契了。他包,你压，中间偶尔会有手指的触碰，他就会停顿一下，耳尖泛红，然后继续手上的动作。</p>
+
+  <p>等所有的月饼都做完，天色已经暗了下来。</p>
+
+  <p>院子里点起了灯笼，月亮从云层后面露出来，又大又圆。云珩站在窗边看了一会儿月亮，然后转过头看你。</p>
+
+  <p>"月饼凉了可以吃了，"他说，"要不要尝尝？"</p>
+
+  <p>你点了点头。</p>
+
+  <p>他拿起一个桂花核桃馅的月饼，掰成两半，把其中一半递给你。</p>
+
+  <p>"尝尝。"</p>
+
+  <p>你咬了一口。皮酥馅甜，桂花的香气在口腔里散开，核桃的颗粒感恰到好处。是很好吃的月饼，比外面卖的要好吃得多。</p>
+
+  <p>"怎么样？"他问，眼神里带着期待。</p>
+
+  <p>"很好吃。"</p>
+
+  <p>他笑了，自己也咬了一口。月光照在他脸上，把他的侧脸勾勒得柔和而立体。他慢慢地咀嚼着月饼，眼睛微微眯起来，像是很满足的样子。</p>
+
+  <p>"明年还做。"他说。</p>
+
+  <p>"好。"</p>
+
+  <p>"还要教你包月饼。"</p>
+
+  <p>"嗯。"</p>
+
+  <p>"还要，"他顿了顿，"还要在厨房。"</p>
+
+  <p>你看着他，挑了挑眉。</p>
+
+  <p>"在厨房做什么？"</p>
+
+  <p>云珩的脸又红了，可他没有回避你的目光。</p>
+
+  <p>"你知道的。"他说。</p>
+
+  <p>你笑了，走过去吻了吻他的唇角。</p>
+
+  <p>月饼的甜味还残留在他的嘴唇上，混着他身上乌木的气息，在唇齿间化开。</p>
+
+  <p>窗外的月亮越升越高，照得整个院子都亮堂堂的。</p>
+
+  <p>衔封街的中秋，月圆,人也圆。</p>
+
+  <div class="end">——END——</div>
+
+    <!-- ==================== 上一章 / 下一章 ==================== -->
+  <div class="chapter-nav">
+    <a href="#" class="chapter-btn" id="prevBtn">← 上一章</a>
+    <a href="#" class="chapter-btn" id="nextBtn">下一章 →</a>
+  </div>
+
+  <!-- ==================== 返回主页 ==================== -->
+  <a href="index.html" class="back-btn">⬅ 返回主页</a>
+
+  <!-- ==================== 悬浮按钮 ==================== -->
+  <div class="float-btns" id="floatBtns">
+    <button class="float-btn" id="btnTop" title="回到顶部">↑</button>
+    <a href="index.html" class="float-btn" title="返回目录">📖</a>
+  </div>
+
+  <!-- ==================== 脚本 ==================== -->
+  <script src="data.js"></script>
+  <script>
+    (function() {
+      // ===== 记住阅读位置 =====
+      var key = 'jellyfish_scroll_' + location.pathname;
+      var saved = localStorage.getItem(key);
+      if (saved) {
+        window.addEventListener('load', function() {
+          window.scrollTo(0, parseInt(saved, 10));
+        });
+      }
+      var timer = null;
+      window.addEventListener('scroll', function() {
+        if (timer) return;
+        timer = setTimeout(function() {
+          localStorage.setItem(key, window.scrollY);
+          timer = null;
+        }, 300);
+      });
+
+      // ===== 悬浮按钮显示/隐藏 =====
+      var floatBtns = document.getElementById('floatBtns');
+      var btnTop = document.getElementById('btnTop');
+
+      window.addEventListener('scroll', function() {
+        if (window.scrollY > 200) {
+          floatBtns.classList.add('show');
+        } else {
+          floatBtns.classList.remove('show');
+        }
+      });
+
+      btnTop.addEventListener('click', function() {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      });
+
+                  // ===== 上一章 / 下一章（自动识别） =====
+      var currentFile = decodeURIComponent(location.pathname.split('/').pop());
+      var currentRole = null;
+      var currentIndex = -1;
+
+      if (typeof articlesData !== 'undefined') {
+        Object.keys(articlesData).forEach(function(roleKey) {
+          var role = articlesData[roleKey];
+          role.list.forEach(function(article, idx) {
+            if (article.href === currentFile) {
+              currentRole = roleKey;
+              currentIndex = idx;
+            }
+          });
+        });
+      }
+
+      if (currentRole !== null && currentIndex >= 0) {
+        var roleData = articlesData[currentRole];
+        var prevBtn = document.getElementById('prevBtn');
+        var nextBtn = document.getElementById('nextBtn');
+
+        if (currentIndex > 0) {
+          prevBtn.href = roleData.list[currentIndex - 1].href;
+        } else {
+          prevBtn.classList.add('disabled');
+          prevBtn.href = 'javascript:void(0)';
+        }
+
+        if (currentIndex < roleData.list.length - 1) {
+          nextBtn.href = roleData.list[currentIndex + 1].href;
+        } else {
+          nextBtn.classList.add('disabled');
+          nextBtn.href = 'javascript:void(0)';
+        }
+      }
+
+      // ===== 8. 字数 / 阅读时长 =====
+      var statsEl = document.getElementById('readingStats');
+      if (statsEl) {
+        var bodyEl = document.querySelector('body');
+        var clone = bodyEl.cloneNode(true);
+        // 去掉脚本、样式、按钮等
+        clone.querySelectorAll('script, style, button, a, .theme-toggle, .float-btns, .chapter-nav, .back-btn, .progress-bar, .reading-stats').forEach(function(el) { el.remove(); });
+        var text = clone.innerText || '';
+        var cleanText = text.replace(/\s+/g, '');
+        var charCount = cleanText.length;
+        var minutes = Math.max(1, Math.round(charCount / 400));
+        statsEl.textContent = '约 ' + charCount + ' 字 · 阅读约 ' + minutes + ' 分钟';
+      }
+
+      // ===== 9. 阅读进度条 =====
+      var progressBar = document.getElementById('progressBar');
+      function updateProgress() {
+        var scrollTop = window.scrollY;
+        var docHeight = document.documentElement.scrollHeight - window.innerHeight;
+        var percent = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+        progressBar.style.width = Math.min(100, Math.max(0, percent)) + '%';
+      }
+      window.addEventListener('scroll', updateProgress);
+      window.addEventListener('resize', updateProgress);
+      updateProgress();
+    })();
+  </script>
+
+  <!-- ==================== 主题切换脚本 ==================== -->
+  <script>
+    (function() {
+      const btn = document.getElementById('themeToggle');
+      const icon = document.getElementById('themeIcon');
+      const text = document.getElementById('themeText');
+      const body = document.body;
+      let isDark = false;
+
+      function applyTheme(dark) {
+        body.classList.toggle('dark', dark);
+        icon.textContent = dark ? '☀️' : '🌙';
+        text.textContent = dark ? '浅色模式' : '深色模式';
+        localStorage.setItem('novel-theme', dark ? 'dark' : 'light');
+      }
+
+      const saved = localStorage.getItem('novel-theme');
+      if (saved === 'dark') { isDark = true; }
+      else if (saved === 'light') { isDark = false; }
+      else { isDark = window.matchMedia('(prefers-color-scheme: dark)').matches; }
+      applyTheme(isDark);
+
+      btn.addEventListener('click', () => {
+        isDark = !isDark;
+        applyTheme(isDark);
+      });
+    })();
+  </script>
+
+</body>
+</html>

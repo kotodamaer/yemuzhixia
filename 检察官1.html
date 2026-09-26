@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>喝下去的东西用肉体偿还吧</title>
+  <style>
+    /* ---------- 主题变量 ---------- */
+    :root {
+      --bg-body: #fefefe;
+      --bg-note: #f9f9f9;
+      --border-light: #eee;
+      --border-medium: #ddd;
+      --text-primary: #333;
+      --text-secondary: #666;
+      --text-muted: #888;
+      --text-title: #222;
+      --text-section: #444;
+      --accent-line: #aaa;
+      --toggle-bg: #ffffff;
+      --toggle-border: #ccc;
+      --toggle-text: #333;
+    }
+    body.dark {
+      --bg-body: #1a1e24;
+      --bg-note: #252a31;
+      --border-light: #2e353e;
+      --border-medium: #3a424d;
+      --text-primary: #e0e0e0;
+      --text-secondary: #b0b8c0;
+      --text-muted: #8a939e;
+      --text-title: #f0f0f0;
+      --text-section: #d0d8e0;
+      --accent-line: #5a6570;
+      --toggle-bg: #2a313a;
+      --toggle-border: #4a5560;
+      --toggle-text: #e8e8e8;
+    }
+
+    /* ---------- 基础样式 ---------- */
+    body {
+      font-family: 'Georgia', 'Songti SC', serif;
+      line-height: 1.8;
+      color: var(--text-primary);
+      max-width: 800px;
+      margin: 40px auto;
+      padding: 20px;
+      background-color: var(--bg-body);
+      border-left: 1px solid var(--border-light);
+      border-right: 1px solid var(--border-light);
+      transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+    }
+
+    p {
+      margin-bottom: 1.2em;
+      text-indent: 2em;
+    }
+    .no-indent { text-indent: 0; }
+
+    .scene-break {
+      text-align: center;
+      margin: 2em 0;
+      color: var(--accent-line);
+      font-size: 0.9em;
+    }
+
+    .title {
+      text-align: center;
+      font-size: 1.8em;
+      margin-bottom: 1em;
+      color: var(--text-title);
+      border-bottom: 1px solid var(--border-medium);
+      padding-bottom: 0.5em;
+    }
+
+    .meta {
+      text-align: center;
+      font-size: 0.9em;
+      color: var(--text-secondary);
+      margin-bottom: 2em;
+      font-style: italic;
+      line-height: 1.6;
+    }
+
+    .end {
+      text-align: center;
+      margin-top: 3em;
+      padding-top: 1em;
+      border-top: 1px solid var(--border-medium);
+      font-weight: bold;
+      color: var(--text-secondary);
+    }
+
+    .section-title {
+      font-weight: bold;
+      color: var(--text-section);
+      margin: 1.5em 0 0.5em;
+      text-align: center;
+      font-size: 1.2em;
+    }
+
+    .dialogue {
+      margin-left: 2em;
+      font-style: italic;
+    }
+
+    .action {
+      color: var(--text-secondary);
+      font-style: italic;
+    }
+
+    .author-note {
+      font-size: 0.85em;
+      color: var(--text-muted);
+      margin-top: 2em;
+      padding: 1em;
+      background-color: var(--bg-note);
+      border-left: 3px solid var(--border-medium);
+      font-family: 'Arial', sans-serif;
+    }
+
+    /* ---------- 主题切换按钮 ---------- */
+    .theme-toggle {
+      position: fixed;
+      top: 24px;
+      right: 24px;
+      background-color: var(--toggle-bg);
+      color: var(--toggle-text);
+      border: 1px solid var(--toggle-border);
+      border-radius: 40px;
+      padding: 10px 18px;
+      font-size: 0.9rem;
+      font-family: Arial, sans-serif;
+      cursor: pointer;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+      transition: all 0.3s ease;
+      z-index: 9999;
+    }
+    .theme-toggle:hover { transform: scale(1.03); }
+    @media (max-width: 600px) {
+      body { margin: 20px auto; padding: 16px; }
+      .theme-toggle { top: 12px; right: 12px; padding: 8px 14px; font-size: 0.8rem; }
+      .title { font-size: 1.5em; }
+    }
+
+    /* ---------- 返回主页板块 ---------- */
+    .back-btn {
+      display: block;
+      text-align: center;
+      max-width: 400px;
+      margin: 2.5em auto 1em;
+      padding: 1em 1.5em;
+      background-color: var(--bg-note);
+      border: 1px solid var(--border-light);
+      border-radius: 8px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-family: 'Arial', sans-serif;
+      font-size: 0.95em;
+      transition: all 0.3s ease;
+    }
+    .back-btn:hover {
+      color: var(--text-primary);
+      background-color: var(--border-light);
+      transform: translateY(-1px);
+    }
+
+    /* ---------- 悬浮按钮 ---------- */
+    .float-btns {
+      position: fixed;
+      right: 20px;
+      bottom: 30px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      z-index: 999;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s;
+    }
+    .float-btns.show {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    .float-btn {
+      width: 46px;
+      height: 46px;
+      border-radius: 50%;
+      background: #282838;
+      border: 1px solid #3b3b4e;
+      color: #d6d0ec;
+      font-size: 1.2rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+      transition: 0.2s;
+    }
+    .float-btn:hover {
+      background: #3a3a52;
+      transform: scale(1.08);
+      color: #b8a6ff;
+    }
+
+    /* ---------- 上一章 / 下一章 ---------- */
+    .chapter-nav {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      margin-top: 30px;
+      padding-top: 20px;
+      border-top: 1px solid var(--border-medium);
+    }
+    .chapter-btn {
+      flex: 1;
+      text-align: center;
+      padding: 12px 16px;
+      border-radius: 20px;
+      background-color: var(--bg-note);
+      border: 1px solid var(--border-light);
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-size: 0.9rem;
+      transition: 0.2s;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .chapter-btn:hover {
+      background-color: var(--border-light);
+      color: var(--text-primary);
+    }
+    .chapter-btn.disabled {
+      opacity: 0.25;
+      pointer-events: none;
+      cursor: default;
+    }
+    @media (max-width:480px) {
+      .chapter-btn { font-size: 0.8rem; padding: 10px 10px; }
+    }
+
+    /* ==================== 8. 字数 / 阅读时长 ==================== */
+    .reading-stats {
+      text-align: center;
+      font-size: 0.85em;
+      color: var(--text-muted);
+      margin: -1em 0 2em;
+      font-family: 'Arial', sans-serif;
+      letter-spacing: 0.5px;
+    }
+
+    /* ==================== 9. 阅读进度条 ==================== */
+    .progress-bar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 0%;
+      height: 3px;
+      background: linear-gradient(90deg, #8f7fd6, #b8a6ff);
+      z-index: 99999;
+      transition: width 0.1s linear;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 阅读进度条 -->
+  <div class="progress-bar" id="progressBar"></div>
+
+  <!-- 主题切换按钮 -->
+  <button class="theme-toggle" id="themeToggle" aria-label="切换深浅色模式">
+    <span id="themeIcon">🌙</span>
+    <span id="themeText">深色模式</span>
+  </button>
+
+  <!-- ==================== 文章正文 ==================== -->
+  <h1 class="title">喝下去的东西用肉体偿还吧</h1>
+  <div class="meta">
+    by宽粉<br>
+    权力与欲望的交锋
+  </div>
+
+  <!-- 字数统计（自动生成） -->
+  <div class="reading-stats" id="readingStats"></div>
+
+  <p>"嚯！又来！"岗哨内年长的检查员接过后辈递来的好酒捧在手里啧啧称奇</p>
+
+  <p>"你也是赶上好时候了，你看，这禁酒令一颁布，最得利的，还不是我们这么些个岗哨。"</p>
+
+  <p>年长的检察员打了个酒嗝。</p>
+
+  <p>"你得见好就收，见好就收明白不"</p>
+
+  <p>年长者拍了拍后辈的肩膀，摇摇晃晃回了宿舍。</p>
+
+  <p>"......"</p>
+
+  <p>年轻的检查员看向窗外的落日，又把帽檐压了回去</p>
+
+  <p>他知道自己无疑是贪心的，贪酒贪回扣，那还有呢？他不知道，或者是从来都不敢想...</p>
+
+  <p>他懒洋洋的靠到墙上，想着或许等大额的金钱填满他那空虚的心，他就会好受一些。</p>
+
+  <p>一辆辆车从他面前驶过，可他没有了盘查的欲望，总是草草问话就同意放行。</p>
+
+  <p>都怪德弗兰公爵...</p>
+
+  <p>他这么想着，塞到他怀里的美酒佳酿和爽快签名的大额罚单在不知不觉中撑大了他的胃口，让他贪婪的恨不得把灵魂剥离永远的纠缠着那个让他魂牵梦绕的人。</p>
+
+  <p>见好就收？他不想要见好就收，他想要......</p>
+
+  <p>"滴！！！"</p>
+
+  <p>在刺耳的鸣笛声中，那辆货车在夜色中如期而至，他不自觉的勾起唇，走向那辆货车，偷偷抬眸在各处寻找你的身影。</p>
+
+  <p>"您好，货运清单。"他驾轻就熟的打开后车门，露出一箱箱的名贵酒液。</p>
+
+  <p>"超额运输......您需缴纳罚款"</p>
+
+  <p>他期待着想看看你的反应，这是他在这个卡口扣了你的第12次，你一定会生气的吧...他清点着酒瓶，想着你会怎么威胁他，或者再次用那些名贵的酒液填满他空洞的生活和人生。</p>
+
+  <p>但，等罚单签完字他都没见到你的本人，他非常不满的咬着牙说只能负责人签字，而司机一口咬定自己就是。</p>
+
+  <p>"啧..."</p>
+
+  <p>可怜的检查员只能板着脸放行。他的春秋大梦卡在了相遇的第一步，连怀中上好的葡萄酒看起来都是那么的酸涩。</p>
+
+  <p>"哼......"他随手把酒瓶扔到了桌子上，刚想摘帽子就闻到了一股不属于这里的味道，他的眼睛猛的瞪大，想寻找来源却被人扣住脖子用枪抵住了他的腰窝</p>
+
+  <p>"晚上好，检查员先生。"</p>
+
+  <p>"哈...德弗兰公爵..."</p>
+
+  <p>他听见了你的声音，板着的脸再次在不自觉中变得明媚，刚想回头却被你一脚踹到了岗哨的墙上，他闷吭了一声跪倒在地，巨大的撞击声吵醒了一墙之隔正在睡觉的另一位检查员，那人迷迷糊糊的问他发生了什么。</p>
+
+  <p>你俯身用手拖住他的下巴，把他固定在手心，枪管拍了拍他的脸示意他好好说。</p>
+
+  <p>"没事，不小心把椅子碰倒了。"检察员开口回应道</p>
+
+  <p>"没事...就成..."那位检查员迷迷糊糊又睡了过去，在这片黑暗中再次只剩他微微急促的呼吸声。</p>
+
+  <p>"德弗兰公爵..."</p>
+
+  <p>"啵！"</p>
+
+  <p>红酒木塞的声音惊的他浑身一颤，黑暗中，他听见你似乎搬来了一张凳子，坐在了他的身后。高跟鞋蹭着他的后脑挑掉了他的帽子，清香苦涩的酒液迎头浇下他不敢张嘴去接这个高昂的"赏赐"，只是紧紧地闭上眼，接受酒水的洗礼，莫名的兴奋感爬满了他的全身，让他的前端顶出一个明显的凸起</p>
+
+  <p>"脱了"</p>
+
+  <p>他浑身一颤，犹豫着没有动，但下一秒，一袋启明币被扔到他的手边</p>
+
+  <p>"！"</p>
+
+  <p>他屈辱感裹挟了他，让他眼前所有事物模糊成一片，只有钱币相碰发出的清脆的动静让他坐立难安，他感觉自己就像是那淫荡贪婪伎子，他要的从来不单单是那铜臭味的金钱</p>
+
+  <p>他想要一切中的一切，想要酒，想要钱，想要那高高在上的人把目光放在丝毫不起眼的他身上。</p>
+
+  <p>"咔哒"</p>
+
+  <p>随着腰带的解开外套也一并滑落，露出里面已经被红酒浸润大半的衬衫上。</p>
+
+  <p>他的衬衫被你从腰际往上推，露出长年执勤却从不曾见太阳的劲瘦腰腹，你掐着他的后脖颈让他乖乖趴下，他主动的塌腰顶臀让你满意的又甩了几个启明币扔到他眼前，他闭上眼睛偏过头却被你掐住下巴把他脑袋掰了回去，手指探入他的口腔，从来没有过性事的小检查员，只是呆呆的任由你挑逗他湿润的舌头，涎水滴滴答答掉落也不敢抬手去擦</p>
+
+  <p>好乖......</p>
+
+  <p>你夸奖着他被你掐着脖子直起身，红酒一股股的灌入他的食道，他呜咽的喝下一口又一口带药的酒，意识马上模糊起来，他感觉被人摆弄着，感觉不适又令他颤栗不止......</p>
+
+  <p>意识陷入黑暗，等意识再次回笼时他就忍不住惊喘出声</p>
+
+  <p>"啊......嗯......"</p>
+
+  <p>他猛的捂住自己的嘴，浑身酸麻的感觉让他浑身颤抖，他还是那个跪趴的姿势，他被一下下的往前顶着，被半褪的裤子上早就一塌糊涂，你的假阳具整个深深的埋入他圆圆的穴口，你摁着他的尾椎骨不停的往里顶，听着他宛若小猫般克制的哼唧声，你俯下身咬了咬他的耳尖轻声询问</p>
+
+  <p>"醒了？"</p>
+
+  <p>他的穴肉猛的绞紧，你啪的一下打在他丰满白洁的臀肉上，把他打的猛的一缩，假阳具被抽出来好一截又被你掐着腰拉回来肉体碰撞发出却是更加淫糜的水声 你感觉他的腰身又软下去了，你挺腰猛顶几下，听见他带着哭腔的哼唧，便埋在他体内不动了。</p>
+
+  <p>缓过来的检查员支起酸软的身体，但在他无意识的时候身体经过了良好的调教，他随便移动一阵阵酸软的痉挛让他已经射到成了深粉色的性器又像坏掉的水龙头一般断断续续的清液。</p>
+
+  <p>你抱起了他的一条腿晃动着接住他自身的动作开始新一轮的肏干，检查员被迫快速的喘息着，这时隔壁下床的声音让他把所有呻吟卡在了嗓子里，宁愿憋到让自己濒临失语的高潮也不愿再出一声，但你是个恶劣的性子，加快了顶弄的速度和位置让他腹腔一抽一抽的翻起白眼还努力去夹住那根肏的他水声迭起的假阳具。</p>
+
+  <p>隔壁的那位似乎有躺下了，发出了轻微的鼾声。检查员猛的放松高潮迭起一阵接一阵他痉挛的耸动着腰腹但是没也射不出来了，只能崩溃的抽泣着。</p>
+
+  <p>你把东西抽了出来，他软倒在地，躺在你扔给他的启明币上，迷迷糊糊的抬头想看清你的脸，你本来打算转身就走的，但是被他拉住了裤脚。</p>
+
+  <p>"表现不错"</p>
+
+  <p>摘下帽子的检察官看起来与你年龄相仿，你把他抱起放到靠墙的角落把他的帽子盖了回去凑近他的耳边轻声道："准备好，后天…我还会来。"</p>
+
+  <p>他支撑不住再次晕了过去，你将一张支票塞入他的衣领消失在晨光中。</p>
+<div class="end">——END——</div>
+
+  <!-- ==================== 上一章 / 下一章 ==================== -->
+  <div class="chapter-nav">
+    <a href="#" class="chapter-btn" id="prevBtn">← 上一章</a>
+    <a href="#" class="chapter-btn" id="nextBtn">下一章 →</a>
+  </div>
+
+  <!-- ==================== 返回主页 ==================== -->
+  <a href="index.html" class="back-btn">⬅ 返回主页</a>
+
+  <!-- ==================== 悬浮按钮 ==================== -->
+  <div class="float-btns" id="floatBtns">
+    <button class="float-btn" id="btnTop" title="回到顶部">↑</button>
+    <a href="index.html" class="float-btn" title="返回目录">📖</a>
+  </div>
+
+  <!-- ==================== 脚本 ==================== -->
+  <script src="data.js"></script>
+  <script>
+    (function() {
+      // ===== 记住阅读位置 =====
+      var key = 'jellyfish_scroll_' + location.pathname;
+      var saved = localStorage.getItem(key);
+      if (saved) {
+        window.addEventListener('load', function() {
+          window.scrollTo(0, parseInt(saved, 10));
+        });
+      }
+      var timer = null;
+      window.addEventListener('scroll', function() {
+        if (timer) return;
+        timer = setTimeout(function() {
+          localStorage.setItem(key, window.scrollY);
+          timer = null;
+        }, 300);
+      });
+
+      // ===== 悬浮按钮显示/隐藏 =====
+      var floatBtns = document.getElementById('floatBtns');
+      var btnTop = document.getElementById('btnTop');
+
+      window.addEventListener('scroll', function() {
+        if (window.scrollY > 200) {
+          floatBtns.classList.add('show');
+        } else {
+          floatBtns.classList.remove('show');
+        }
+      });
+
+      btnTop.addEventListener('click', function() {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      });
+
+      // ===== 上一章 / 下一章（自动识别） =====
+      var currentFile = decodeURIComponent(location.pathname.split('/').pop());
+      var currentRole = null;
+      var currentIndex = -1;
+
+      if (typeof articlesData !== 'undefined') {
+        Object.keys(articlesData).forEach(function(roleKey) {
+          var role = articlesData[roleKey];
+          role.list.forEach(function(article, idx) {
+            if (article.href === currentFile) {
+              currentRole = roleKey;
+              currentIndex = idx;
+            }
+          });
+        });
+      }
+
+      if (currentRole !== null && currentIndex >= 0) {
+        var roleData = articlesData[currentRole];
+        var prevBtn = document.getElementById('prevBtn');
+        var nextBtn = document.getElementById('nextBtn');
+
+        if (currentIndex > 0) {
+          prevBtn.href = roleData.list[currentIndex - 1].href;
+        } else {
+          prevBtn.classList.add('disabled');
+          prevBtn.href = 'javascript:void(0)';
+        }
+
+        if (currentIndex < roleData.list.length - 1) {
+          nextBtn.href = roleData.list[currentIndex + 1].href;
+        } else {
+          nextBtn.classList.add('disabled');
+          nextBtn.href = 'javascript:void(0)';
+        }
+      }
+
+      // ===== 字数 / 阅读时长 =====
+      var statsEl = document.getElementById('readingStats');
+      if (statsEl) {
+        var bodyEl = document.querySelector('body');
+        var clone = bodyEl.cloneNode(true);
+        // 去掉脚本、样式、按钮等
+        clone.querySelectorAll('script, style, button, a, .theme-toggle, .float-btns, .chapter-nav, .back-btn, .progress-bar, .reading-stats').forEach(function(el) { el.remove(); });
+        var text = clone.innerText || '';
+        var cleanText = text.replace(/\s+/g, '');
+        var charCount = cleanText.length;
+        var minutes = Math.max(1, Math.round(charCount / 400));
+        statsEl.textContent = '约 ' + charCount + ' 字 · 阅读约 ' + minutes + ' 分钟';
+      }
+
+      // ===== 阅读进度条 =====
+      var progressBar = document.getElementById('progressBar');
+      function updateProgress() {
+        var scrollTop = window.scrollY;
+        var docHeight = document.documentElement.scrollHeight - window.innerHeight;
+        var percent = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+        progressBar.style.width = Math.min(100, Math.max(0, percent)) + '%';
+      }
+      window.addEventListener('scroll', updateProgress);
+      window.addEventListener('resize', updateProgress);
+      updateProgress();
+    })();
+  </script>
+
+  <!-- ==================== 主题切换脚本 ==================== -->
+  <script>
+    (function() {
+      const btn = document.getElementById('themeToggle');
+      const icon = document.getElementById('themeIcon');
+      const text = document.getElementById('themeText');
+      const body = document.body;
+      let isDark = false;
+
+      function applyTheme(dark) {
+        body.classList.toggle('dark', dark);
+        icon.textContent = dark ? '☀️' : '🌙';
+        text.textContent = dark ? '浅色模式' : '深色模式';
+        localStorage.setItem('novel-theme', dark ? 'dark' : 'light');
+      }
+
+      const saved = localStorage.getItem('novel-theme');
+      if (saved === 'dark') { isDark = true; }
+      else if (saved === 'light') { isDark = false; }
+      else { isDark = window.matchMedia('(prefers-color-scheme: dark)').matches; }
+      applyTheme(isDark);
+
+      btn.addEventListener('click', () => {
+        isDark = !isDark;
+        applyTheme(isDark);
+      });
+    })();
+  </script>
+
+</body>
+</html>
