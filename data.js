@@ -162,7 +162,7 @@ prosecutor: {
       { title: '第二章 · 一次单纯的旅行（1vs5）by雾Euro', href: 'np2.html' },
       { title: '第三章 · [你x幽灵+面试官]zc什么的还是放一边吧by水母', href: 'np3.html' },
       { title: '第四章 · [你x面试官+愚者]肝帝的一百种使用方式by水母', href: 'np4.html' },
-      { title: '第五章 · [你x某某人+但丁]为了boss哪怕是做小by水母', href: 'np4.html' }
+      { title: '第五章 · [你x某某人+但丁]为了boss哪怕是做小by水母', href: 'np5.html' }
     ]
   },
   kaiye: {
