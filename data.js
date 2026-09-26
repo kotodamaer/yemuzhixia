@@ -40,7 +40,7 @@ var articlesData = {
       { title: '第五章 · boss，我爬不动了byfantasma', href: '提线人5.html' },
       { title: '第六章 · 你x提线人·走绳 中医', href: '提线人6.html' },
       { title: '第七章 · 水煎好文明', href: '提线人7.html' },
-     { title: '第七章 · 别乱喝boss递来的牛奶', href: '提线人7.html' }
+     { title: '第七章 · 别乱喝boss递来的牛奶', href: '提线人8.html' }
     ]
   },
   tyrant: {
@@ -90,7 +90,7 @@ var articlesData = {
       { title: '第一章 · 东南西北gb by困困困困', href: '东南西北1.html' },
       { title: '第二章 · 七夕福利by水母', href: '东南西北2.html' },
       { title: '第三章 · 你x东南西北·青梅酒by水母', href: '东南西北3.html' },
-      { title: '第四章 · 中秋嘉庆by水母', href: '东南西北4html' },
+      { title: '第四章 · 中秋嘉庆by水母', href: '东南西北4.html' },
      ]
   },
   endy: {
