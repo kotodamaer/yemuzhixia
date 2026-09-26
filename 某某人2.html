@@ -375,4 +375,151 @@
 
   <div class="end">——END——</div>
 
- 
+ <!-- ==================== 上一章 / 下一章 ==================== -->
+  <div class="chapter-nav">
+    <a href="#" class="chapter-btn" id="prevBtn">← 上一章</a>
+    <a href="#" class="chapter-btn" id="nextBtn">下一章 →</a>
+  </div>
+
+  <!-- ==================== 返回主页 ==================== -->
+  <a href="index.html" class="back-btn">⬅ 返回主页</a>
+
+  <!-- ==================== 悬浮按钮 ==================== -->
+  <div class="float-btns" id="floatBtns">
+    <button class="float-btn" id="btnTop" title="回到顶部">↑</button>
+    <a href="index.html" class="float-btn" title="返回目录">📖</a>
+  </div>
+
+  <!-- ==================== 脚本 ==================== -->
+  <script src="data.js"></script>
+  <script>
+    (function() {
+      // ===== 记住阅读位置 =====
+      var key = 'jellyfish_scroll_' + location.pathname;
+      var saved = localStorage.getItem(key);
+      if (saved) {
+        window.addEventListener('load', function() {
+          window.scrollTo(0, parseInt(saved, 10));
+        });
+      }
+      var timer = null;
+      window.addEventListener('scroll', function() {
+        if (timer) return;
+        timer = setTimeout(function() {
+          localStorage.setItem(key, window.scrollY);
+          timer = null;
+        }, 300);
+      });
+
+      // ===== 悬浮按钮显示/隐藏 =====
+      var floatBtns = document.getElementById('floatBtns');
+      var btnTop = document.getElementById('btnTop');
+
+      window.addEventListener('scroll', function() {
+        if (window.scrollY > 200) {
+          floatBtns.classList.add('show');
+        } else {
+          floatBtns.classList.remove('show');
+        }
+      });
+
+      btnTop.addEventListener('click', function() {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      });
+
+                  // ===== 上一章 / 下一章（自动识别） =====
+      var currentFile = decodeURIComponent(location.pathname.split('/').pop());
+      var currentRole = null;
+      var currentIndex = -1;
+
+      if (typeof articlesData !== 'undefined') {
+        Object.keys(articlesData).forEach(function(roleKey) {
+          var role = articlesData[roleKey];
+          role.list.forEach(function(article, idx) {
+            if (article.href === currentFile) {
+              currentRole = roleKey;
+              currentIndex = idx;
+            }
+          });
+        });
+      }
+
+      if (currentRole !== null && currentIndex >= 0) {
+        var roleData = articlesData[currentRole];
+        var prevBtn = document.getElementById('prevBtn');
+        var nextBtn = document.getElementById('nextBtn');
+
+        if (currentIndex > 0) {
+          prevBtn.href = roleData.list[currentIndex - 1].href;
+        } else {
+          prevBtn.classList.add('disabled');
+          prevBtn.href = 'javascript:void(0)';
+        }
+
+        if (currentIndex < roleData.list.length - 1) {
+          nextBtn.href = roleData.list[currentIndex + 1].href;
+        } else {
+          nextBtn.classList.add('disabled');
+          nextBtn.href = 'javascript:void(0)';
+        }
+      }
+
+      // ===== 8. 字数 / 阅读时长 =====
+      var statsEl = document.getElementById('readingStats');
+      if (statsEl) {
+        var bodyEl = document.querySelector('body');
+        var clone = bodyEl.cloneNode(true);
+        // 去掉脚本、样式、按钮等
+        clone.querySelectorAll('script, style, button, a, .theme-toggle, .float-btns, .chapter-nav, .back-btn, .progress-bar, .reading-stats').forEach(function(el) { el.remove(); });
+        var text = clone.innerText || '';
+        var cleanText = text.replace(/\s+/g, '');
+        var charCount = cleanText.length;
+        var minutes = Math.max(1, Math.round(charCount / 400));
+        statsEl.textContent = '约 ' + charCount + ' 字 · 阅读约 ' + minutes + ' 分钟';
+      }
+
+      // ===== 9. 阅读进度条 =====
+      var progressBar = document.getElementById('progressBar');
+      function updateProgress() {
+        var scrollTop = window.scrollY;
+        var docHeight = document.documentElement.scrollHeight - window.innerHeight;
+        var percent = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+        progressBar.style.width = Math.min(100, Math.max(0, percent)) + '%';
+      }
+      window.addEventListener('scroll', updateProgress);
+      window.addEventListener('resize', updateProgress);
+      updateProgress();
+    })();
+  </script>
+
+  <!-- ==================== 主题切换脚本 ==================== -->
+  <script>
+    (function() {
+      const btn = document.getElementById('themeToggle');
+      const icon = document.getElementById('themeIcon');
+      const text = document.getElementById('themeText');
+      const body = document.body;
+      let isDark = false;
+
+      function applyTheme(dark) {
+        body.classList.toggle('dark', dark);
+        icon.textContent = dark ? '☀️' : '🌙';
+        text.textContent = dark ? '浅色模式' : '深色模式';
+        localStorage.setItem('novel-theme', dark ? 'dark' : 'light');
+      }
+
+      const saved = localStorage.getItem('novel-theme');
+      if (saved === 'dark') { isDark = true; }
+      else if (saved === 'light') { isDark = false; }
+      else { isDark = window.matchMedia('(prefers-color-scheme: dark)').matches; }
+      applyTheme(isDark);
+
+      btn.addEventListener('click', () => {
+        isDark = !isDark;
+        applyTheme(isDark);
+      });
+    })();
+  </script>
+
+</body>
+</html>
